@@ -146,14 +146,54 @@ Voice Room
 
 ## 🏗️ Architecture
 
+Architecture Overview
+                              ┌──────────────────────┐
+                              │       GoLah PWA      │
+                              │ React / Next.js      │
+                              │ TypeScript           │
+                              │ Tailwind CSS         │
+                              └──────────┬───────────┘
+                                         │
+                                  HTTPS / WebSocket
+                                         │
+                              ┌──────────▼───────────┐
+                              │     Backend / API     │
+                              │                       │
+                              │ Authentication       │
+                              │ User & Trip Data     │
+                              │ File / Document Mgmt │
+                              │ Realtime              │
+                              │ External API Gateway │
+                              └──────────┬────────────┘
+                                         │
+             ┌───────────────────────────┼──────────────────────────┐
+             │                           │                          │
+             ▼                           ▼                          ▼
+    ┌─────────────────┐       ┌────────────────────┐      ┌─────────────────┐
+    │    Supabase     │       │   External APIs    │      │   AI Service    │
+    │                 │       │                    │      │                 │
+    │ PostgreSQL      │       │ Maps               │      │ LLM             │
+    │ Authentication  │       │ Flights            │      │ STT             │
+    │ Storage         │       │ Currency           │      │ TTS             │
+    │ Realtime        │       │ Translation        │      │ AI Tools        │
+    └─────────────────┘       └────────────────────┘      └────────┬────────┘
+                                                                   │
+                                                          ┌────────▼────────┐
+                                                          │   AI Context    │
+                                                          │                 │
+                                                          │ Trip Context    │
+                                                          │ User Context   │
+                                                          │ Chat Context   │
+                                                          │ Vault Context  │
+                                                          └─────────────────┘
 
 The major application modules are:
 
-* Travel Vault
+* Travel Vault (Files Management)
 * Smart Map
-* Currency Exchange
-* Chat Hub
-* AI Engine
+* Live Currencies Rate & Converter
+* Chat Hub (Text Chat & Voice Call)
+* AI Engine 
 
 These modules share relevant trip context so that the AI can provide more contextual assistance.
 
