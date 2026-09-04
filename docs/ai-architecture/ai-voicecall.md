@@ -1,4 +1,4 @@
-                    GoLah PWA
+                    GoLah Chat
                          │
                  ┌───────┴───────┐
                  │               │
