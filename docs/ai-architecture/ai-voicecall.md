@@ -2,9 +2,9 @@
                          │
                  ┌───────┴───────┐
                  │               │
-             Text Chat       Voice Room
+             Text Chat       Voice Chat
                  │               │
-                 │            LiveKit
+                 │       LiveKit / WebRTC
                  │               │
                  │        ┌──────┴──────┐
                  │        │             │
