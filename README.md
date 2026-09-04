@@ -147,6 +147,7 @@ Voice Room
 ## 🏗️ Architecture
 
 Architecture Overview
+```text
                               ┌──────────────────────┐
                               │       GoLah PWA      │
                               │ React / Next.js      │
@@ -186,6 +187,7 @@ Architecture Overview
                                                           │ Chat Context   │
                                                           │ Vault Context  │
                                                           └─────────────────┘
+```
 
 The major application modules are:
 
