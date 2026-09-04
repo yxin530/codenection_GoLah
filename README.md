@@ -169,7 +169,6 @@ Users can manage:
 
 Additional functionality includes:
 
-- QR code scanning
 - Document expiry alerts
 - Centralized travel information
 
