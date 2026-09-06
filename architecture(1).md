@@ -12,7 +12,7 @@ The MVP provides a unified platform for:
 - Currency conversion
 - AI Chat Hub
 - Group travel
-- Voice communication
+- Voice-message transcription
 - Crisis management
 - AI-powered travel assistance
 
@@ -88,7 +88,6 @@ The architecture does not require:
 │ ├── Finance Agent                                             │
 │ ├── Travel Files Agent                                       │
 │ ├── Crisis Agent                                              │
-│ └── Voice Agent                                               │
 │                                                              │
 │ Context Layer │ Tool Calling │ Approval Management            │
 └──────────────────────────────────────────────────────────────┘
@@ -312,39 +311,32 @@ Group permissions should distinguish between:
 
 ---
 
-## 12. Voice Architecture
+## 12. Voice Message Architecture
 
 The README specifies:
 
-- WebRTC
-- Socket.io / Supabase Realtime
 - STT
 - LLM
-- TTS
 
 Provider selection is intentionally left blank for now.
 
 ```text
-User A ─┐
-User B ─┼──> Voice Room
-User C ─┘        │
-                 ▼
-                STT
-                 │
-                 ▼
-        Conversation Context
-                 │
-                 ▼
-           GoLah AI
-                 │
-                 ▼
-                TTS
-                 │
-                 ▼
-             AI Voice
+User sends voice message
+        ↓
+Backend receives audio
+        ↓
+Speech-to-Text
+        ↓
+Transcript stored / attached to message
+        ↓
+Relevant Chat + Trip + Group Context
+        ↓
+GoLah AI
+        ↓
+Normal text response
 ```
 
-The AI should respond when addressed and should use relevant recent conversation context rather than permanently storing every second of a voice conversation.
+Voice calls, TTS, and AI-generated voice replies are outside the current MVP.
 
 ---
 
@@ -401,7 +393,6 @@ Providers are currently unspecified for:
 
 - LLM
 - STT
-- TTS
 - Maps
 - Flights
 - Currency
@@ -429,7 +420,6 @@ The architecture must:
 
 Realtime functionality can use:
 
-- WebRTC for voice communication.
 - Socket.io and/or Supabase Realtime for realtime application events.
 
 Realtime events may include:
@@ -438,7 +428,7 @@ Realtime events may include:
 - Shared itinerary updates
 - Group decisions
 - Expense updates
-- Voice state
+- Voice-message processing state
 - AI response events
 
 ---
@@ -459,7 +449,7 @@ GoLah
 ├── Currency Converter
 ├── AI Chat Hub
 ├── Group Travel
-├── Voice Communication
+├── Voice-message Transcription
 ├── Crisis Management
 └── AI Agent Layer
 ```

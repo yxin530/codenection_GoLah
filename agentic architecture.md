@@ -6,7 +6,7 @@ GoLah is an AI-powered travel companion delivered as a Progressive Web App (PWA)
 
 The agentic layer should make the trip context useful through a coordinated multi-agent system rather than treating the AI as a standalone chatbot.
 
-The architecture is intentionally MVP-focused. LLM, STT, and TTS providers are left provider-agnostic until they are selected.
+The architecture is intentionally MVP-focused. LLM and STT providers are left provider-agnostic until they are selected. TTS is not required for the current MVP.
 
 ---
 
@@ -52,7 +52,7 @@ The architecture is intentionally MVP-focused. LLM, STT, and TTS providers are l
                          │ Travel Files            │
                          │ Smart Map                │
                          │ Currency                 │
-                         │ Chat & Voice             │
+                         │ Chat & Voice Messages    │
                          │ Group Travel             │
                          │ Crisis Management        │
                          └────────────┬────────────┘
@@ -106,7 +106,6 @@ The architecture is intentionally MVP-focused. LLM, STT, and TTS providers are l
                          │                         │
                          │ LLM                     │
                          │ STT                     │
-                         │ TTS                     │
                          │ Tool Calling            │
                          └─────────────────────────┘
 ```
@@ -270,18 +269,18 @@ For emergencies, the system should clearly distinguish assistance from professio
 
 ---
 
-### 4.9 Voice Agent
+### 4.9 Voice Message Processing
 
 Responsibilities:
 
-- Coordinate voice input/output.
-- Convert speech into usable conversation context through STT.
-- Send relevant context to the Orchestrator.
-- Return AI responses through TTS.
-- Support AI interaction during group voice conversations.
+- Receive voice messages.
+- Convert speech into text through STT.
+- Attach the transcript to relevant conversation context.
+- Send the text and context to the Orchestrator.
+- Return the AI response through normal text chat.
 
 ```text
-User Speech
+User voice message
     ↓
 STT
     ↓
@@ -293,10 +292,10 @@ Specialist Agent(s)
     ↓
 LLM Response
     ↓
-TTS
-    ↓
-AI Voice
+Normal text response
 ```
+
+Voice calls, TTS, and AI-generated voice replies are outside the current MVP.
 
 ---
 
@@ -583,6 +582,6 @@ The MVP agentic system should prioritize:
 6. Finance Agent
 7. Travel Files Agent
 8. Crisis Agent
-9. Voice Agent where voice functionality is implemented
+9. Voice-message transcription where implemented
 
 Future improvements such as predictive itinerary planning, price-drop alerts, AI visa checking, AI-generated packing lists, advanced conversation memory, native mobile applications, and wallet integrations are outside the MVP implementation boundary.

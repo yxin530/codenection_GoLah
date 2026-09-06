@@ -178,34 +178,31 @@ Groups shall be able to:
 
 ---
 
-## FR-10 Voice Communication
+## FR-10 Voice Message Transcription
 
-The MVP voice architecture shall support the planned flow:
+The MVP shall support the following flow:
 
 ```text
 Speech
  ↓
 STT
  ↓
-Conversation Context
+Transcript stored / attached to message
+ ↓
+Relevant conversation and trip context
  ↓
 GoLah AI
  ↓
-LLM
- ↓
-TTS
- ↓
-AI Voice
+Normal text response
 ```
 
 The system should support:
 
 - Voice messages.
-- Voice calls.
-- AI-assisted voice interactions.
-- Shared conversation context.
+- Speech-to-text transcription.
+- Shared conversation and trip context.
 
-STT and TTS providers are not selected yet.
+STT provider is not selected yet. TTS and voice calls are not required for the current MVP.
 
 ---
 
@@ -247,7 +244,6 @@ Required MVP agents:
 - Finance Agent
 - Travel Files Agent
 - Crisis Agent
-- Voice Agent
 
 ---
 
@@ -411,7 +407,7 @@ Realtime functionality should support:
 - Group chat.
 - Shared trip updates.
 - Relevant AI response events.
-- Voice communication.
+- Voice-message processing.
 
 ---
 
@@ -442,18 +438,16 @@ Realtime functionality should support:
 
 ## Maps
 
-- Google Maps API and/or Mapbox GL JS
+- Maps API: provider TBD
 
 ## Realtime
 
-- WebRTC
 - Socket.io and/or Supabase Realtime
 
 ## AI
 
 - LLM
 - STT
-- TTS
 - AI Tool Calling
 - AI Context Management
 
@@ -561,7 +555,7 @@ The MVP should be considered functionally aligned when:
 7. The AI can retrieve relevant trip context.
 8. Group travel data can be shared.
 9. Group expenses can be split.
-10. Voice architecture can support the intended STT → AI → TTS flow when providers are configured.
+10. Voice messages can be transcribed through STT and used as context for normal text-based AI responses.
 11. Crisis-related information can be surfaced.
 12. AI agents can work as a coordinated multi-agent system.
 13. AI can autonomously analyze and prepare actions.

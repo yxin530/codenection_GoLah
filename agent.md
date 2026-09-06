@@ -32,7 +32,7 @@ Prioritize:
 6. Currency converter
 7. AI Chat Hub
 8. Group travel
-9. Voice communication architecture
+9. Voice-message transcription
 10. Crisis management
 11. Multi-agent AI
 12. Shared AI context
@@ -97,7 +97,6 @@ Required specialist agents:
 - Finance Agent
 - Travel Files Agent
 - Crisis Agent
-- Voice Agent
 
 ---
 
@@ -244,12 +243,12 @@ The system must distinguish between information that is safe to read and actions
 
 ---
 
-# 10. Voice
+# 10. Voice Messages
 
 The intended flow is:
 
 ```text
-User Speech
+User voice message
  ↓
 STT
  ↓
@@ -257,16 +256,12 @@ Conversation Context
  ↓
 GoLah AI
  ↓
-LLM
- ↓
-TTS
- ↓
-AI Voice
+Normal text response
 ```
 
-Use WebRTC and/or the chosen realtime technology for communication.
+Voice messages are transcribed to text and handled through normal text-based AI chat. Voice calls, WebRTC, TTS, and AI-generated voice replies are outside the current MVP.
 
-The LLM/STT/TTS providers are intentionally **not selected yet**.
+The LLM/STT providers are intentionally **not selected yet**.
 
 Do not hard-code a provider into the architecture unless explicitly instructed later.
 
