@@ -46,13 +46,13 @@ Table of every distinct idea generated, with why each was kept or dropped, order
 
 **Mindmap**
 
-![Mindmap](GoLah-mindmap.png)
+![Mindmap](docs/assets/GoLah-mindmap.png)
 
 The mind map shows how the team's ideas expanded from the central travel-planning problem into the major GoLah feature areas.
 
 **Problem Tree**
 
-![Problem Tree](GoLah-problemtree.png)
+![Problem Tree](docs/assets/GoLah-problemtree.png)
 
 The problem tree shows the root causes and consequences of fragmented travel planning and how the problem affects both individual and group travellers.
 
