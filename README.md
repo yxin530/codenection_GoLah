@@ -124,7 +124,7 @@ Users can send voice messages, which are converted to text through speech-to-tex
 Instead of searching across multiple apps during stressful situations such as flight delays or plan changes, GoLah provides relevant assistance inside the same platform where the trip is managed.
 
 ### 5. 📂 Structured Travel Information + Files
-Structured travel information such as visa expiry dates, flight details, and hotel reservations is stored separately from uploaded documents. This allows the AI to retrieve useful travel information without processing entire PDFs or images every time.
+Structured travel information such as flight details, and hotel reservations is stored separately from uploaded documents.
 
 ### 6. 🗺️ Smart Map with Community Travel Information
 The Smart Map combines travel discovery, trip-context recommendations, live pricing/availability where supported, and community-generated comments, reviews, and photos.
@@ -133,7 +133,7 @@ The Smart Map combines travel discovery, trip-context recommendations, live pric
 Travellers can swipe through destinations and rate them, while group preferences can be used to support AI-assisted destination decisions.
 
 ### 8. 📝 Community Travel Status & Posts
-Users can share travel experiences, ideas, statuses, or destinations they are considering. This gives travellers who are **没有头绪 / unsure where to go** a source of inspiration from other users.
+Users can share travel experiences, ideas, statuses, or destinations they are considering. This gives travellers who are **unsure where to go and do** a source of inspiration from other users.
 
 ### 9. #️⃣ Organised Chat Hub Sections
 The Chat Hub introduces Discord-inspired sections inside the group conversation, allowing users to separate important topics and make key messages easier to find without leaving the Chat Hub.
@@ -164,7 +164,6 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 ### 🧠 AI
 - LLM: **[Provider TBD]**
 - Speech-to-Text: **[Provider TBD]**
-- Text-to-Speech: **Not required for the current MVP**
 - AI Tool Calling
 - AI Context Management
 
@@ -203,8 +202,8 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
         │ Auth          │      │ Flights              │
         │ Storage       │      │ Currency             │
         │ Realtime      │      │ Translation          │
-        └───────┬───────┘      │ Booking              │
-                │              │ Speech-to-Text       │
+        └───────┬───────┘      │ Speech-to-Text       │
+                │              │                      │
                 │              └──────────┬───────────┘
                 └────────────┬────────────┘
                              ▼
@@ -213,35 +212,12 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
                   │                        │
                   │ Orchestrator Agent     │
                   │ ├─ Trip Planning       │
-                  │ ├─ Travel Information  │
                   │ ├─ Recommendation      │
-                  │ ├─ Group Travel        │
                   │ ├─ Finance             │
-                  │ ├─ Travel Files        │
-                  │ └─ Crisis              │
+                  │ ├─ Chat                │
                   │                        │
                   │ Context + Tool Calling │
                   └────────────────────────┘
-```
-
-## Voice Message AI Flow
-
-> 🎙️ Voice communication with AI is **not** part of the MVP. Voice messages are treated as an input format only.
-
-```text
-User sends voice message
-        ↓
-Backend receives audio
-        ↓
-Speech-to-Text
-        ↓
-Transcript stored / attached to message
-        ↓
-Relevant Chat + Trip + Group Context
-        ↓
-GoLah AI
-        ↓
-Text response
 ```
 
 ## AI Agent Architecture
@@ -254,14 +230,10 @@ GoLah uses a **multi-agent AI architecture**.
                      Orchestrator Agent
                             │
        ┌────────────┬───────┼────────┬─────────────┐
-       ▼            ▼       ▼        ▼             ▼
- Trip Planning   Travel  Recommendation  Group    Finance
-    Agent       Info Agent     Agent       Agent     Agent
-       │
-       ├───────────────┐
-       ▼               ▼
- Travel Files      Crisis Agent
-    Agent
+       ▼            ▼                ▼             ▼
+ Trip Planning  Recommendation    Finance       Chat Agent
+    Agent           Agent          Agent  
+
 ```
 
 Agents can read relevant information, use tools, analyse the trip, generate recommendations, detect issues, and prepare actions.
@@ -280,7 +252,7 @@ The MVP focuses on delivering the required GoLah experience rather than implemen
 
 1. User authentication and profiles.
 2. Trip creation and itinerary management.
-3. Travel Files management and expiry information.
+3. Travel Files management.
 4. Smart Map with travel discovery, AI-assisted routes, live pricing/availability where supported, and community comments/reviews/photos.
 5. Currency conversion.
 6. AI Chat Hub with Solo and Group modes.
