@@ -1,402 +1,66 @@
-# GoLah — Coding Agent Instructions
+# AGENT.md — Instructions for the Coding Agent Building GoLah
 
-## 1. What You Are Building
+You are building **GoLah**, an AI travel companion PWA. Before writing code, read, in order:
 
-GoLah is an AI-powered travel companion built as a Progressive Web App.
-
-The core product idea is:
-
-> One app. One trip. Less planning, more travelling.
-
-GoLah brings trip planning, travel information, communication, navigation, travel files, group coordination, currency conversion, and travel assistance into one platform.
-
-The trip should be treated as the central object of the application.
-
-The AI is a contextual intelligence layer across the application, not a standalone chatbot.
+1. `README.md` — product vision, features, what's explicitly out of scope.
+2. `requirements.md` — the phased build plan. **Build in phase order (1 → 2 → 3). Do not jump ahead** to a later phase's feature even if it looks easy, unless explicitly asked.
+3. `architecture.md` — system architecture, data model, provider abstraction rules.
+4. `agentic-architecture.md` — the multi-agent AI layer spec.
 
 ---
 
-# 2. Current Development Priority
+## Ground Rules
 
-Build the **MVP/current version only**.
-
-Do not implement future features simply because they appear in the README's future-improvements section.
-
-Prioritize:
-
-1. Authentication
-2. Trip management
-3. Trip planning
-4. Travel files
-5. Smart Map
-6. Currency converter
-7. AI Chat Hub
-8. Group travel
-9. Voice-message transcription
-10. Crisis management
-11. Multi-agent AI
-12. Shared AI context
+1. **Work one phase at a time.** Finish and validate Phase 1's exit criteria (see `requirements.md`) before starting Phase 2 work, unless the user explicitly asks you to skip ahead.
+2. **Never hardcode a single external vendor behind feature code.** LLM, Maps, Flights, Currency, Translation, Speech-to-Text, and Booking all go through the provider abstraction in `/lib/providers/<capability>/`. Feature code and agents depend on the interface, not the SDK.
+3. **No agent or route may directly mutate consequential state.** Itinerary re-planning, bill split finalization, and anything booking/payment/cancellation-adjacent must go through the `agent_actions` propose → approve → execute flow. Never wire a "propose" tool straight to a DB write.
+4. **Never report success on an external action without provider confirmation.** If a provider call is ambiguous, times out, or fails, surface that state explicitly — don't assume it worked.
+5. **Respect RLS / trip membership on every trip-scoped table**, from the first migration onward — don't defer security to "later."
+6. **Stay inside MVP scope.** Do not build: AI voice calls, AI-generated voice/TTS, continuous background listening, autonomous booking/payment, standalone expense tracking, native mobile apps. If a request seems to ask for one of these, flag it back to the user instead of building it.
 
 ---
 
-# 3. Core Product Model
+## When You're Not Sure
 
-Think of GoLah as:
+If you hit a decision that isn't answered in `README.md`, `requirements.md`, or `architecture.md` (e.g. exact approval quorum rules, which LLM vendor to finally wire up, multi-destination trip schema), **do not silently guess and proceed as if it were settled**. Either:
+- Ask the user directly, or
+- Pick the most conservative/reversible option, implement it, and clearly flag the assumption in your summary/PR description (see "Open Questions" sections in `requirements.md` and `architecture.md` for known open items).
 
-```text
-                    GoLah
-                      │
-       ┌──────────────┼──────────────┐
-       │              │              │
-   Plan Trip      Manage Trip     Travel
-       │              │              │
-       └──────────────┼──────────────┘
-                      │
-                Shared Context
-                      │
-                  GoLah AI
-                      │
-       ┌──────────────┼──────────────┐
-       │              │              │
-      Solo          Group          Crisis
-      Help          Travel         Support
+---
+
+## Tech Stack Reference (do not deviate without asking)
+
+- Frontend: React + Next.js (App Router) + TypeScript + Tailwind, PWA (manifest + service worker).
+- Backend: Next.js API Routes, Node.js.
+- Data: Supabase (Postgres + Auth + Storage + Realtime).
+- AI: Orchestrator + specialist agents per `agentic-architecture.md`, LLM provider stubbed/pluggable.
+- External services: see `architecture.md` §2 default provider table — start with the free-tier defaults listed there unless the user specifies otherwise.
+
+---
+
+## Suggested Working Loop
+
+For each feature in the current phase:
+1. Confirm which entities/tables it touches (add migrations if new — keep RLS in the same migration, not a follow-up).
+2. Implement provider/tool interfaces it needs (if not already present).
+3. Implement the API route(s).
+4. Implement the UI.
+5. If the feature can propose a consequential action, wire it through `agent_actions`, not a direct mutation.
+6. Add/update tests per `agentic-architecture.md` §9 for anything agent-related.
+7. Note in your summary: what was built, what provider/assumption was used if not yet decided, and what's still open.
+
+---
+
+## File Map (create if missing, keep organized under)
+
+```
+/app                    Next.js routes (App Router)
+/lib/providers/<cap>/   External service abstractions (llm, maps, flights, currency, translation, stt, booking)
+/lib/ai/                Orchestrator + specialist agents + tools
+/lib/db/                Supabase client, query helpers
+/supabase/migrations/   SQL migrations incl. RLS policies
+/components/            UI components
+/docs/                  This doc set (architecture.md, agentic-architecture.md, requirements.md, AGENT.md, README.md)
 ```
 
-The application should avoid recreating the same information in disconnected modules.
-
----
-
-# 4. AI Architecture
-
-Use a **multi-agent architecture**.
-
-```text
-User
- ↓
-Orchestrator Agent
- ↓
-Select Specialist
- ↓
-Retrieve Context
- ↓
-Use Tools
- ↓
-Reason
- ↓
-Approval Check
- ↓
-Response / Action
-```
-
-Required specialist agents:
-
-- Trip Planning Agent
-- Travel Information Agent
-- Recommendation Agent
-- Group Travel Agent
-- Finance Agent
-- Travel Files Agent
-- Crisis Agent
-
----
-
-# 5. Agent Behavior
-
-Agents are allowed to be autonomous.
-
-They can:
-
-- Retrieve information.
-- Search external services.
-- Analyze the user's trip.
-- Compare options.
-- Detect problems.
-- Calculate expenses.
-- Prepare recommendations.
-- Prepare itinerary changes.
-
-However, autonomy has a strict boundary.
-
-## Re-planning
-
-If the AI wants to materially re-plan the itinerary:
-
-```text
-Detect problem
- ↓
-Generate new plan
- ↓
-Explain changes
- ↓
-Ask user for approval
- ↓
-Only then apply changes
-```
-
-Never silently replace an approved itinerary.
-
-## Consequential actions
-
-Always ask for confirmation before:
-
-- Booking
-- Rebooking
-- Cancellation
-- Payment
-- Financial commitments
-- Other consequential external actions
-
----
-
-# 6. Context
-
-The AI should use relevant context from:
-
-```text
-Trip Context
-User Context
-Group Context
-Chat Context
-Travel Files Context
-```
-
-Example:
-
-User:
-
-> Are we free tomorrow afternoon?
-
-Do not answer only from general model knowledge.
-
-Retrieve:
-
-```text
-Trip
- ↓
-Itinerary
- ↓
-Group context if relevant
- ↓
-AI
-```
-
-Then answer using the actual trip.
-
----
-
-# 7. Smart Map
-
-The Smart Map is more than a navigation screen.
-
-It should support:
-
-- Destination exploration.
-- Location information.
-- AI route suggestions.
-- Live pricing and availability where supported.
-- Booking options where supported.
-- Comments.
-- Reviews.
-- Photos.
-- Sharing user-generated travel information.
-
-Do not include QR scanning under Travel Files.
-
----
-
-# 8. Travel Files
-
-Travel Files should support:
-
-- Passport
-- Visa
-- Arrival cards
-- Boarding passes
-- Hotel reservations
-- Travel insurance
-- eSIM information
-- Emergency contacts
-- Other travel documents
-- Expiry alerts
-
-Keep structured travel information separate from uploaded files where practical.
-
-The AI should retrieve structured information when possible rather than unnecessarily processing complete uploaded documents.
-
----
-
-# 9. Group Travel
-
-Group functionality should support:
-
-- Shared trips
-- Group chat
-- Media sharing
-- Preferences
-- Shared itineraries
-- Group decisions
-- Shared budget
-- Expense splitting
-- AI using shared trip context
-
-The system must distinguish between information that is safe to read and actions that require permission/approval.
-
----
-
-# 10. Voice Messages
-
-The intended flow is:
-
-```text
-User voice message
- ↓
-STT
- ↓
-Conversation Context
- ↓
-GoLah AI
- ↓
-Normal text response
-```
-
-Voice messages are transcribed to text and handled through normal text-based AI chat. Voice calls, WebRTC, TTS, and AI-generated voice replies are outside the current MVP.
-
-The LLM/STT providers are intentionally **not selected yet**.
-
-Do not hard-code a provider into the architecture unless explicitly instructed later.
-
----
-
-# 11. External Integrations
-
-External APIs should normally be accessed through the backend/tool layer.
-
-Potential services:
-
-- Maps
-- Flights
-- Currency
-- Translation
-- Booking
-- AI
-
-Keep provider-specific implementation isolated so providers can be changed later.
-
----
-
-# 12. Security Rules
-
-Never:
-
-- Put private API keys in frontend code.
-- Give agents unrestricted database access.
-- Expose unrelated travel files.
-- Claim an external action succeeded without tool confirmation.
-- Apply a material itinerary re-plan without user approval.
-- Perform booking/payment/rebooking/cancellation without confirmation.
-
----
-
-# 13. Coding Style / Architecture Rules
-
-When implementing features:
-
-1. Keep frontend and backend responsibilities separated.
-2. Keep AI orchestration separate from individual agents.
-3. Keep agents focused on their domain.
-4. Keep external API integrations behind backend tools.
-5. Prefer structured data between agents.
-6. Avoid duplicating trip data.
-7. Keep approval state explicit.
-8. Handle API failures safely.
-9. Do not invent unavailable external data.
-10. Keep the implementation MVP-sized.
-
----
-
-# 14. Agent Result Contract
-
-When possible, specialist agents should return a structured result similar to:
-
-```text
-{
-  status,
-  summary,
-  data,
-  recommendations,
-  proposedActions,
-  requiresApproval,
-  approvalReason,
-  toolResults,
-  errors
-}
-```
-
-The exact implementation can use TypeScript interfaces/types.
-
----
-
-# 15. Failure Behavior
-
-If an API or tool fails:
-
-- Do not pretend it worked.
-- Return a useful error.
-- Preserve existing data.
-- Do not partially apply dangerous actions.
-- Allow the user to retry where appropriate.
-
-If context is missing:
-
-- Retrieve it if possible.
-- If it cannot be retrieved, clearly state that the answer may be limited.
-
----
-
-# 16. MVP Definition
-
-The goal is not to build a perfect autonomous travel super-agent.
-
-The goal is to build a working MVP where:
-
-```text
-Trip
- ↓
-Shared Data
- ↓
-Context
- ↓
-Multi-Agent AI
- ↓
-Useful Assistance
-```
-
-works reliably.
-
-The system should demonstrate that GoLah can unify travel information and use it intelligently.
-
----
-
-# 17. Future Features
-
-Do not implement these unless explicitly requested later:
-
-- Predictive itinerary planning
-- Automatic price-drop alerts
-- AI visa checking
-- AI-generated packing lists
-- Advanced AI memory
-- Native mobile applications
-- Apple Wallet
-- Google Wallet
-- Additional booking integrations
-
----
-
-# 18. Source of Truth
-
-The GoLah README defines the product scope.
-
-When implementing, preserve the product terminology and current MVP scope described in the README and these architecture/requirements documents.
-
-If a requirement is ambiguous or conflicts with an explicit user instruction, ask for clarification rather than silently inventing behavior.
+Keep this file map's docs in sync as the project evolves — if architecture decisions change, update `architecture.md`/`agentic-architecture.md` in the same PR, don't let them drift.
