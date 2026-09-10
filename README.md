@@ -1,281 +1,36 @@
-# ✈️ GoLah
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-> **One app. One trip. Your AI travel companion.**
+## Getting Started
 
-**Team:** Chor Yun Xin · Ang Jie Ying · Kung Xuan Yu  
-**Problem Statement:** Travel Planner  
-**Video Presentation:** [Unlisted YouTube Link]  
-**Presentation Slides:** [Public Link]
+First, run the development server:
 
----
-
-## 📑 Table of Contents
-
-- [1. 🚀 Project Overview](#1--project-overview)
-- [2. 💡 Ideation & Process](#2--ideation--process)
-  - [2.1 Ideas We Considered](#21-ideas-we-considered)
-  - [2.2 Ideation Boards](#22-ideation-boards)
-  - [2.3 Mentor Consultation](#23-mentor-consultation)
-- [3. 🎨 Design & Prototype](#3--design--prototype)
-- [4. ✨ What Makes It Different](#4--what-makes-it-different)
-- [5. 🛠️ Technical Architecture & Feasibility](#5--technical-architecture--feasibility)
-  - [Tech Stack](#tech-stack)
-  - [System Architecture](#system-architecture)
-  - [Voice Message AI Flow](#voice-message-ai-flow)
-  - [AI Agent Architecture](#ai-agent-architecture)
-  - [Build Plan & Scope](#build-plan--scope)
-
----
-
-# 1. 🚀 Project Overview
-
-**GoLah** is an AI-powered travel companion built as a **Progressive Web App (PWA)** that brings trip planning, travel information, communication, and essential travel tools into one platform. Instead of switching between separate apps for itineraries, maps, documents, currency, and group coordination, travellers can manage their trip from one shared space. GoLah combines **context-aware AI, smart maps, travel files, group chat, voice-message transcription, AI bill splitting, and crisis assistance** to support travellers before and during their trip. Whether travelling solo or with a group, GoLah keeps the trip context in one place so the AI can provide more relevant assistance.
-
-### 🌟 Key Features
-
-| Feature | What it does |
-| :--- | :--- |
-| 📁 **Travel Files Management** | Centralised storage for passports, visas, boarding passes, hotel reservations, insurance, eSIM info, and emergency contacts. |
-| 🗺️ **Smart Map** | Destination exploration with AI-assisted routes, live pricing/availability where supported, booking options, trip-context recommendations, and community comments, reviews, and photos. |
-| 💱 **Currency Converter** | Live exchange rates and quick currency conversion. |
-| 🤖 **AI Chat Hub** | Solo and Group modes with AI that understands relevant trip context. |
-| 🧳 **AI Trip Planning** | Swipe-based destination discovery, AI-powered group destination decisions, and automatic bill splitting. |
-| 💬 **Group Travel** | Shared trips, group chat, media sharing, preference coordination, shared itineraries, and AI-assisted bill splitting. |
-| 🎙️ **Voice Message Transcription** | Voice messages are transcribed in the backend so GoLah AI can understand them as conversation and trip context. |
-| 🚨 **Crisis Management** | Assistance for flight delays, plan changes, cancellations, and accidents within the same platform. |
-| 📝 **Travel Status & Posts** | Users can share travel-related posts or statuses, helping others discover ideas when they are unsure where or what to travel. |
-| #️⃣ **Chat Hub Sections** | Users can organise important conversations into sections inside the Chat Hub, inspired by Discord-style channels while keeping everything within the trip chat. |
-
----
-
-# 2. 💡 Ideation & Process
-
-## 2.1 Ideas We Considered
-
-The following ideas were evaluated during ideation, with the selected concepts listed first.
-
-| 💡 Idea | Decision | Reason |
-| :--- | :--- | :--- |
-| **Centralized AI Trip Planning** | ✅ Chosen | Dynamic trip planning based on destination, dates, budget, provider options, and personal preferences. |
-| **AI Swarm Agents Architecture** | ✅ Chosen | Specialized agents handle tasks such as logistics, routing, finance, crisis, and recommendations. |
-| **Smart Map & Attraction Reviews** | ✅ Chosen | Combines AI routes, live pricing/availability where supported, booking options, and community reviews/photos. |
-| **Structured File Management** | ✅ Chosen | Keeps important travel information and documents organised in one place. |
-| **AI Travel Chatbot & Companion** | ✅ Chosen | Context-aware AI available in Solo and Group modes instead of as a standalone generic chatbot. |
-| **Integrated Bill Splitting** | ✅ Chosen | Lets group travellers split bills directly with AI assistance. |
-| **Voice Message Transcription** | ✅ Chosen | Converts voice messages to text so the AI can understand and use them as conversation/trip context. |
-| **Crisis Management Hub** | ✅ Chosen | Provides support during disruptions, cancellations, accidents, and unexpected travel problems. |
-| **Travel Status & Community Posts** | ✅ Chosen | Lets users share travel ideas, statuses, and posts so others can discover destinations and activities when they have no idea where to go. |
-| **Chat Hub Sections** | ✅ Chosen | Adds Discord-inspired sections/channels inside the Chat Hub so users can separate and find important conversations more easily. |
-| **Two-Way Voice Calling with AI** | ❌ Dropped | Too technically complex; voice-message transcription provides useful AI access without live AI calls. |
-| **Group Memories & Photo Album** | ❌ Dropped | Users can already rely on native shared albums such as Apple iCloud Shared Albums or Google Photos. |
-| **Group-Only Travel Coordination App** | ❌ Dropped | Solo travellers face the same fragmentation problem, so GoLah supports both solo and group travel. |
-| **Standalone Expense Tracking** | ❌ Dropped | AI bill splitting and currency conversion already cover the core financial needs for the current scope, making a separate expense-tracking feature unnecessary. |
-
-## 2.2 Ideation Boards
-
-### 🧠 Mindmap
-
-![Mindmap](docs/assets/GoLah-mindmap.png)
-
-The mind map shows how the team's ideas expanded from the central travel-planning problem into GoLah's major feature areas.
-
-### 🌳 Problem Tree
-
-![Problem Tree](docs/assets/GoLah-problemtree.png)
-
-The problem tree shows the root causes and consequences of fragmented travel planning and how the problem affects both individual and group travellers.
-
-## 2.3 Mentor Consultation
-
-| 📅 Date | 👤 Mentor | 💬 Key Feedback | 🔄 Our Decision |
-| :--- | :--- | :--- | :--- |
-| *6/9/2026* | *Looi Wei En* | Recommended a native mobile app because several core features are well suited to native capabilities. | **Retained PWA.** We prioritised instant cross-device access and easy sharing, while keeping the app installable from the browser without requiring a traditional app-store installation. |
-
----
-
-# 3. 🎨 Design & Prototype
-
-**UI Prototype:** [Public Link]
-
-> 💡 *Check that the prototype opens in an incognito window. Embed or link 4–8 key screens with short captions explaining the main interactions.*
-
----
-
-# 4. ✨ What Makes It Different
-
-GoLah treats the **trip as the central object** and layers context-aware AI on top of a unified travel platform, rather than solving only one part of the travel experience.
-
-## 🌟 Novel Features
-
-### 1. 🤖 Context-Aware AI Assistant
-Unlike generic travel chatbots, GoLah AI retrieves relevant information from the user's actual trip — such as itinerary, group preferences, travel files, chat history, and current trip context — before generating a response.
-
-> Example: *“Are we free tomorrow afternoon?”* → GoLah checks the itinerary instead of guessing.
-
-### 2. 🗳️ AI-Powered Group Destination Debate
-GoLah AI compares destination options against each group member's preferences, such as budget, interests, and activity style, to support a more data-informed group decision.
-
-### 3. 🎙️ Voice Message Transcription for AI Context
-Users can send voice messages, which are converted to text through speech-to-text processing. The transcript becomes part of the relevant conversation context, allowing the AI to understand voice messages and respond through normal text chat.
-
-> **Note:** AI voice calls and AI-generated voice replies are not part of the current MVP.
-
-### 4. 🚨 Crisis Management Inside the Travel Platform
-Instead of searching across multiple apps during stressful situations such as flight delays or plan changes, GoLah provides relevant assistance inside the same platform where the trip is managed.
-
-### 5. 📂 Structured Travel Information + Files
-Structured travel information such as flight details, and hotel reservations is stored separately from uploaded documents.
-
-### 6. 🗺️ Smart Map with Community Travel Information
-The Smart Map combines travel discovery, trip-context recommendations, live pricing/availability where supported, and community-generated comments, reviews, and photos.
-
-### 7. 👥 Swipe-Based Discovery with Group Consensus
-Travellers can swipe through destinations and rate them, while group preferences can be used to support AI-assisted destination decisions.
-
-### 8. 📝 Community Travel Status & Posts
-Users can share travel experiences, ideas, statuses, or destinations they are considering. This gives travellers who are **unsure where to go and do** a source of inspiration from other users.
-
-### 9. #️⃣ Organised Chat Hub Sections
-The Chat Hub introduces Discord-inspired sections inside the group conversation, allowing users to separate important topics and make key messages easier to find without leaving the Chat Hub.
-
----
-
-# 5. 🛠️ Technical Architecture & Feasibility
-
-## Tech Stack
-
-### 💻 Frontend
-- React
-- Next.js
-- TypeScript
-- Tailwind CSS
-- Progressive Web App (PWA)
-
-### ⚙️ Backend
-- Node.js
-- Next.js API Routes
-
-### 🗄️ Database & Storage
-- Supabase
-- PostgreSQL
-- Supabase Storage
-- Supabase Realtime where appropriate
-
-### 🧠 AI
-- LLM: **[Provider TBD]**
-- Speech-to-Text: **[Provider TBD]**
-- AI Tool Calling
-- AI Context Management
-
-### 🗺️ Maps & Travel Services
-- Maps API: **[Provider TBD]**
-- Flight/travel information API: **[Provider TBD]**
-- Currency API: **[Provider TBD]**
-- Translation service: **[Provider TBD]**
-- Booking service: **[Provider TBD]**
-
-> Provider choices are intentionally left open while the team evaluates suitable services, pricing, free tiers, API capabilities, and implementation constraints.
-
-## System Architecture
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                         GoLah PWA                            │
-│                                                             │
-│ Travel Files │ Smart Map │ Currency │ AI Chat │ Group Travel│
-│ Trip Planning │ Voice Messages │ Crisis Assistance          │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Backend / API                          │
-│                                                             │
-│ Auth │ Trips │ Itineraries │ Files │ Groups │ Chat │ AI      │
-│ Voice Message Processing │ External API Gateway              │
-└───────────────┬──────────────────────┬──────────────────────┘
-                │                      │
-                ▼                      ▼
-        ┌───────────────┐      ┌──────────────────────┐
-        │    Supabase   │      │   External Services  │
-        │               │      │                      │
-        │ PostgreSQL    │      │ Maps                 │
-        │ Auth          │      │ Flights              │
-        │ Storage       │      │ Currency             │
-        │ Realtime      │      │ Translation          │
-        └───────┬───────┘      │ Speech-to-Text       │
-                │              │                      │
-                │              └──────────┬───────────┘
-                └────────────┬────────────┘
-                             ▼
-                  ┌────────────────────────┐
-                  │      GoLah AI Layer    │
-                  │                        │
-                  │ Orchestrator Agent     │
-                  │ ├─ Trip Planning       │
-                  │ ├─ Recommendation      │
-                  │ ├─ Finance             │
-                  │ ├─ Chat                │
-                  │                        │
-                  │ Context + Tool Calling │
-                  └────────────────────────┘
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## AI Agent Architecture
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-GoLah uses a **multi-agent AI architecture**.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```text
-                         GoLah AI
-                            │
-                     Orchestrator Agent
-                            │
-       ┌────────────┬───────┼────────┬─────────────┐
-       ▼            ▼                ▼             ▼
- Trip Planning  Recommendation    Finance       Chat Agent
-    Agent           Agent          Agent  
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-```
+## Learn More
 
-Agents can read relevant information, use tools, analyse the trip, generate recommendations, detect issues, and prepare actions.
+To learn more about Next.js, take a look at the following resources:
 
-### 🔐 Human Approval & Safety
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-- **Material itinerary re-planning requires user approval** before changes are applied.
-- **Booking, rebooking, cancellation, payment, and other consequential external actions require explicit confirmation.**
-- The system must **not claim an external action succeeded** unless the relevant tool/API confirms success.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Build Plan & Scope
+## Deploy on Vercel
 
-The MVP focuses on delivering the required GoLah experience rather than implementing every possible future travel feature.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### 🚀 Core MVP
-
-1. User authentication and profiles.
-2. Trip creation and itinerary management.
-3. Travel Files management.
-4. Smart Map with travel discovery, AI-assisted routes, live pricing/availability where supported, and community comments/reviews/photos.
-5. Currency conversion.
-6. AI Chat Hub with Solo and Group modes.
-7. Multi-agent AI with shared trip/group context.
-8. AI-assisted trip planning and group destination decisions.
-9. Group chat, shared trips, and **AI-assisted bill splitting**.
-10. Voice-message transcription so AI can understand voice messages.
-11. Crisis assistance focused on travel disruptions and plan changes.
-12. Community travel status/posts for destination inspiration.
-13. Organised Chat Hub sections for topic-based conversations.
-14. Human approval flow for itinerary re-planning and consequential actions.
-
-### 🚫 Explicitly Not Part of the Current MVP
-
-- AI voice calls.
-- AI-generated voice replies / TTS.
-- Continuous background voice listening.
-- Fully autonomous booking or rebooking.
-- Automatic payments.
-- Standalone expense tracking.
-- Native iOS/Android applications.
-- Future predictive travel features unless required by the organizer.
-
----
-
-> 🧩 **GoLah is designed to stay modular**, allowing future capabilities to be added without redesigning the core system.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
