@@ -13,10 +13,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 export function ChatInfoSheet() {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <Info className="h-5 w-5" />
-        </Button>
+      <SheetTrigger
+        render={
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" />
+        }
+      >
+        <Info className="h-5 w-5" />
       </SheetTrigger>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
