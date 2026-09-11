@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Compass, FileText, Banknote, MessageSquare, Map as MapIcon, Sparkles } from 'lucide-react';
 
-export function TripTabs({ tripId }: { tripId: string }) {
+export function TripNavigation({ tripId }: { tripId: string }) {
   const pathname = usePathname();
   
   const tabs = [

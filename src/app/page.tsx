@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Search, UserRound, UsersRound, Video } from "lucide-react";
 import { useState } from "react";
-import { TripSetupDrawer } from "@/components/home/TripSetupDrawer";
+import { TripSetupDrawer } from "@/components/trips/TripSetupDrawer";
 import { BottomNav } from "@/components/layout/BottomNav";
 
 const flights = [
