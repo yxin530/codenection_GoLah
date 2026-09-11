@@ -7,93 +7,106 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Info, UserPlus, Users, Settings } from "lucide-react";
+import { Info, UserPlus, Users, Settings, Camera } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function ChatInfoSheet() {
   return (
     <Sheet>
-      <SheetTrigger
-        render={
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" />
-        }
-      >
+      <SheetTrigger render={<Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" />}>
         <Info className="h-5 w-5" />
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Group Chat Info</SheetTitle>
-          <SheetDescription>
-            Manage trip members and group preferences.
-          </SheetDescription>
-        </SheetHeader>
-        
-        <div className="mt-8 space-y-6">
-          {/* Members Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium flex items-center gap-2">
-                <Users className="w-4 h-4" /> Trip Members
-              </h3>
-              <Button variant="ghost" size="sm" className="h-8 text-xs text-[#F26C3D]">
-                <UserPlus className="w-3 h-3 mr-1" /> Invite
-              </Button>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>YX</AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm font-medium">Yun Xin (You)</div>
-                </div>
-                <div className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-md">Organizer</div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>JY</AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm">Jie Ying</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>XY</AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm">Xuan Yu</div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <SheetContent className="overflow-y-auto w-full sm:max-w-md p-0 flex flex-col">
+        {/* Cover Photo Area */}
+        <div className="relative h-40 w-full bg-muted/50 overflow-hidden">
+          {/* Default pattern or placeholder image */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#ff6b3d]/20 to-[#a9dcfb]/40" />
+          
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            className="absolute bottom-2 right-2 rounded-full h-8 px-3 text-xs bg-background/80 backdrop-blur shadow-sm hover:bg-background"
+          >
+            <Camera className="w-3 h-3 mr-1.5" />
+            Change Cover
+          </Button>
+        </div>
 
-          {/* Group Preferences Section */}
-          <div className="space-y-4 pt-4 border-t border-border">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium flex items-center gap-2">
-                <Settings className="w-4 h-4" /> Group Preferences
-              </h3>
-              <Button variant="ghost" size="sm" className="h-8 text-xs text-[#F26C3D]">
-                Edit
-              </Button>
+        <div className="p-6 pt-4 flex-1">
+          <SheetHeader className="text-left">
+            <SheetTitle className="text-2xl font-bold">Group Chat Info</SheetTitle>
+            <SheetDescription>
+              Manage trip members and group preferences.
+            </SheetDescription>
+          </SheetHeader>
+          
+          <div className="mt-8 space-y-8">
+            {/* Members Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold flex items-center gap-2 text-foreground/80 uppercase tracking-wide">
+                  <Users className="w-4 h-4" /> Trip Members
+                </h3>
+                <Button variant="ghost" size="sm" className="h-8 text-xs text-[#F26C3D] hover:text-[#d85e33] hover:bg-orange-50">
+                  <UserPlus className="w-3 h-3 mr-1" /> Invite
+                </Button>
+              </div>
+              <div className="space-y-4 bg-muted/30 p-3 rounded-xl border border-border/50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9 border border-background shadow-sm">
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">YX</AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm font-medium">Yun Xin (You)</div>
+                  </div>
+                  <div className="text-[10px] font-semibold tracking-wide text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">Organizer</div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9 border border-background shadow-sm">
+                      <AvatarFallback className="bg-secondary text-secondary-foreground font-medium">JY</AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm font-medium">Jie Ying</div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9 border border-background shadow-sm">
+                      <AvatarFallback className="bg-secondary text-secondary-foreground font-medium">XY</AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm font-medium">Xuan Yu</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="space-y-3 text-sm">
-              <div className="grid grid-cols-2 gap-1">
-                <span className="text-muted-foreground">Overall Budget:</span>
-                <span className="font-medium">$1,500 / pax</span>
+
+            {/* Group Preferences Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold flex items-center gap-2 text-foreground/80 uppercase tracking-wide">
+                  <Settings className="w-4 h-4" /> Group Preferences
+                </h3>
+                <Button variant="ghost" size="sm" className="h-8 text-xs text-[#F26C3D] hover:text-[#d85e33] hover:bg-orange-50">
+                  Edit
+                </Button>
               </div>
-              <div className="grid grid-cols-2 gap-1">
-                <span className="text-muted-foreground">Activity Style:</span>
-                <span className="font-medium">Balanced</span>
-              </div>
-              <div className="space-y-1">
-                <span className="text-muted-foreground">Top Interests:</span>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-md">Food & Dining</span>
-                  <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-md">Culture</span>
-                  <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-md">Shopping</span>
+              
+              <div className="space-y-4 bg-muted/30 p-4 rounded-xl border border-border/50 text-sm">
+                <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Overall Budget</span>
+                  <span className="font-semibold">$1,500 / pax</span>
+                </div>
+                <div className="flex justify-between items-center pb-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Activity Style</span>
+                  <span className="font-semibold">Balanced</span>
+                </div>
+                <div className="space-y-2 pt-1">
+                  <span className="text-muted-foreground block">Top Interests</span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="bg-orange-100/50 text-[#F26C3D] border border-orange-200 text-xs px-2.5 py-1 rounded-md font-medium">Food & Dining</span>
+                    <span className="bg-orange-100/50 text-[#F26C3D] border border-orange-200 text-xs px-2.5 py-1 rounded-md font-medium">Culture</span>
+                    <span className="bg-orange-100/50 text-[#F26C3D] border border-orange-200 text-xs px-2.5 py-1 rounded-md font-medium">Shopping</span>
+                  </div>
                 </div>
               </div>
             </div>

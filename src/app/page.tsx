@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Search, UserRound, UsersRound, Video } from "lucide-react";
 import { useState } from "react";
 import { TripSetupDrawer } from "@/components/home/TripSetupDrawer";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const flights = [
   { title: "Kuala Lumpur to Bangkok", meta: "From RM 219 · 2h 15m", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=900&q=80" },
@@ -45,7 +46,7 @@ export default function Home() {
       <section><SectionHeading>Explore Malaysia</SectionHeading><div className="grid grid-cols-2 gap-4 sm:gap-6">{malaysia.map((place) => <ImageCard key={place.title} {...place} />)}</div></section>
       <section><SectionHeading>Travel For You</SectionHeading><div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">{travelPosts.map((post) => <ImageCard key={post.title} {...post} video={post.type === "Reel"} />)}</div></section>
     </div>
-    <nav aria-label="Primary navigation" className="fixed bottom-4 left-1/2 z-10 flex w-[calc(100%-32px)] max-w-[560px] -translate-x-1/2 items-center justify-around rounded-full bg-[#a9dcfb] px-3 py-3 shadow-lg shadow-[#6ebbe4]/40 sm:bottom-6"><Link href="/community" className="rounded-full p-3 text-[#ff8b69] transition hover:bg-white/30" aria-label="Explore"><MapPin className="size-7" /></Link><Link href="/" className="rounded-full bg-white/25 p-3 text-[#ff6b3d] transition hover:bg-white/40" aria-label="Home"><HomeIcon className="size-7 fill-current" /></Link><Link href="/trips" className="rounded-full p-3 text-[#ff8b69] transition hover:bg-white/30" aria-label="Trips and chat"><MessageCircle className="size-7" /></Link><Link href="/onboarding" className="rounded-full p-3 text-[#ff8b69] transition hover:bg-white/30" aria-label="Profile"><UserRound className="size-7" /></Link></nav>
+    <BottomNav />
     <TripSetupDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} tripType={tripType} />
   </div></main>;
 }

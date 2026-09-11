@@ -1,13 +1,11 @@
-import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full bg-background">
-      <Sidebar />
-      <div className="flex flex-1 flex-col pl-64">
+      <div className="flex flex-1 flex-col">
         <TopBar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 w-full h-full">
           {children}
         </main>
       </div>

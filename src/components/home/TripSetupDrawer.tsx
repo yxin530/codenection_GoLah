@@ -111,24 +111,21 @@ export function TripSetupDrawer({ isOpen, onClose, tripType }: TripSetupDrawerPr
               <div className="space-y-2">
                 <Label>Start Date</Label>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
+                  <PopoverTrigger render={<Button
                       variant={"outline"}
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !startDate && "text-muted-foreground"
                       )}
-                    >
+                    />}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={startDate}
                       onSelect={setStartDate}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -137,24 +134,21 @@ export function TripSetupDrawer({ isOpen, onClose, tripType }: TripSetupDrawerPr
               <div className="space-y-2">
                 <Label>End Date</Label>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
+                  <PopoverTrigger render={<Button
                       variant={"outline"}
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !endDate && "text-muted-foreground"
                       )}
-                    >
+                    />}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={endDate}
                       onSelect={setEndDate}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -207,8 +201,8 @@ export function TripSetupDrawer({ isOpen, onClose, tripType }: TripSetupDrawerPr
               <Button type="submit" className="w-full bg-[#ff6b3d] hover:bg-[#f45d30] text-white">
                 Submit Plan
               </Button>
-              <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
+              <DrawerClose render={<Button variant="outline" />}>
+                Cancel
               </DrawerClose>
             </DrawerFooter>
           </form>
