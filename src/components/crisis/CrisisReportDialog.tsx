@@ -17,10 +17,12 @@ export function CrisisReportDialog() {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="destructive" className="bg-red-500 hover:bg-red-600 text-white gap-2 h-9">
-          <AlertTriangle className="w-4 h-4" /> Report Crisis
-        </Button>
+      <DialogTrigger
+        render={
+          <Button variant="destructive" className="bg-red-500 hover:bg-red-600 text-white gap-2 h-9" />
+        }
+      >
+        <AlertTriangle className="w-4 h-4" /> Report Crisis
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
