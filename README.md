@@ -19,10 +19,10 @@
 - [3. 🎨 Design & Prototype](#3--design--prototype)
 - [4. ✨ What Makes It Different](#4--what-makes-it-different)
 - [5. 🛠️ Technical Architecture & Feasibility](#5--technical-architecture--feasibility)
-  - [5.1 Tech Stack](#51--tech-stack)
-  - [5.2 System Architecture](#52--system-architecture)
-  - [5.3 AI Agent Architecture](#53--ai-agent-architecture)
-  - [5.4 Build Plan & Scope](#54--build-plan--scope)
+  - [5.1 Tech Stack](#51-tech-stack)
+  - [5.2 System Architecture](#52-system-architecture)
+  - [5.3 AI Agent Architecture](#53-ai-agent-architecture)
+  - [5.4 Build Plan & Scope](#54-build-plan--scope)
 
 ---
 
