@@ -156,6 +156,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 ### ⚙️ Backend
 - Node.js
 - Next.js API Routes
+- swagger ui documentation
 
 ### 🗄️ Database & Storage
 - Supabase
@@ -164,17 +165,16 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 - Supabase Realtime where appropriate
 
 ### 🧠 AI
-- LLM: **[Provider TBD]**
+- LLM: **Gemini AI**
 - Speech-to-Text: **[Provider TBD]**
 - AI Tool Calling
 - AI Context Management
 
 ### 🗺️ Maps & Travel Services
-- Maps API: **[Provider TBD]**
+- Maps API: **mapbox**
 - Flight/travel information API: **[Provider TBD]**
 - Currency API: **[Provider TBD]**
-- Translation service: **[Provider TBD]**
-- Booking service: **[Provider TBD]**
+- Weather API: **[Provider TBD]**
 
 > Provider choices are intentionally left open while the team evaluates suitable services, pricing, free tiers, API capabilities, and implementation constraints.
 
@@ -203,7 +203,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
         │ PostgreSQL    │      │ Maps                 │
         │ Auth          │      │ Flights              │
         │ Storage       │      │ Currency             │
-        │ Realtime      │      │ Translation          │
+        │ Realtime      │      │ Weather              │
         └───────┬───────┘      │ Speech-to-Text       │
                 │              │                      │
                 │              └──────────┬───────────┘
