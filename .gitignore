@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # project planning and agent notes
-AGENT.md
+agent.md
 architecture.md
-agentic-architecture.md
+agentic architecture.md
 requirements.md
