@@ -19,11 +19,10 @@
 - [3. 🎨 Design & Prototype](#3--design--prototype)
 - [4. ✨ What Makes It Different](#4--what-makes-it-different)
 - [5. 🛠️ Technical Architecture & Feasibility](#5--technical-architecture--feasibility)
-  - [Tech Stack](#tech-stack)
-  - [System Architecture](#system-architecture)
-  - [Voice Message AI Flow](#voice-message-ai-flow)
-  - [AI Agent Architecture](#ai-agent-architecture)
-  - [Build Plan & Scope](#build-plan--scope)
+  - [5.1 Tech Stack](#tech-stack)
+  - [5.2 System Architecture](#system-architecture)
+  - [5.3 AI Agent Architecture](#ai-agent-architecture)
+  - [5.4 Build Plan & Scope](#build-plan--scope)
 
 ---
 
@@ -145,7 +144,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 
 # 5. 🛠️ Technical Architecture & Feasibility
 
-## Tech Stack
+## 5.1 Tech Stack
 
 ### 💻 Frontend
 - React
@@ -179,7 +178,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 
 > Provider choices are intentionally left open while the team evaluates suitable services, pricing, free tiers, API capabilities, and implementation constraints.
 
-## System Architecture
+## 5.2 System Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -223,7 +222,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
                   └────────────────────────┘
 ```
 
-## AI Agent Architecture
+## 5.3 AI Agent Architecture
 
 GoLah uses a **multi-agent AI architecture**.
 
@@ -247,7 +246,7 @@ Agents can read relevant information, use tools, analyse the trip, generate reco
 - **Booking, rebooking, cancellation, payment, and other consequential external actions require explicit confirmation.**
 - The system must **not claim an external action succeeded** unless the relevant tool/API confirms success.
 
-## Build Plan & Scope
+## 5.4 Build Plan & Scope
 
 The MVP focuses on delivering the required GoLah experience rather than implementing every possible future travel feature.
 
