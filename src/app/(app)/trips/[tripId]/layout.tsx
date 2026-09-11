@@ -1,6 +1,7 @@
 import { TripTabs } from './TripTabs';
 
-export default function TripViewLayout({ children, params }: { children: React.ReactNode, params: { tripId: string } }) {
+export default async function TripViewLayout({ children, params }: { children: React.ReactNode, params: Promise<{ tripId: string }> }) {
+  const { tripId } = await params;
   return (
     <div className="max-w-6xl mx-auto space-y-6 h-full flex flex-col">
       <div>
@@ -8,7 +9,7 @@ export default function TripViewLayout({ children, params }: { children: React.R
         <p className="text-muted-foreground">Oct 15 - Oct 22, 2026</p>
       </div>
 
-      <TripTabs tripId={params.tripId} />
+      <TripTabs tripId={tripId} />
       
       <div className="flex-1 pb-10">
         {children}
