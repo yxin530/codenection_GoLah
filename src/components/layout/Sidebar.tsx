@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Compass, Map, Settings, Home } from 'lucide-react';
+import { Compass, Map, Settings, Home, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
@@ -20,6 +20,10 @@ export function Sidebar() {
         <Link href="/trips/new" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
           <Compass className="h-5 w-5" />
           Plan Trip
+        </Link>
+        <Link href="/community" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+          <Globe className="h-5 w-5" />
+          Community
         </Link>
         <Link href="/settings" className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
           <Settings className="h-5 w-5" />

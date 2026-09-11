@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, FileText, Banknote, MessageSquare } from 'lucide-react';
+import { Compass, FileText, Banknote, MessageSquare, Map as MapIcon, Sparkles } from 'lucide-react';
 
 export function TripTabs({ tripId }: { tripId: string }) {
   const pathname = usePathname();
   
   const tabs = [
     { name: 'Itinerary', href: `/trips/${tripId}/itinerary`, icon: Compass },
+    { name: 'Smart Map', href: `/trips/${tripId}/map`, icon: MapIcon },
+    { name: 'Discover', href: `/trips/${tripId}/discover`, icon: Sparkles },
     { name: 'Travel Files', href: `/trips/${tripId}/files`, icon: FileText },
     { name: 'Currency', href: `/trips/${tripId}/currency`, icon: Banknote },
     { name: 'AI Chat Hub', href: `/trips/${tripId}/chat`, icon: MessageSquare },
