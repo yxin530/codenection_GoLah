@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass } from 'lucide-react';
+import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass , CheckCircle2, XCircle, Loader2} from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ChatInfoSheet } from '@/components/chat/ChatInfoSheet';
 import { MessageBubble } from '@/components/chat/MessageBubble';
@@ -368,7 +368,7 @@ export default function ChatHubPage() {
       const flightCostUSD = 450;
       const flightCostMYR = flightCostUSD * 4.70;
       
-      const accChoice = typeof window !== 'undefined' ? localStorage.getItem('approvedPollAcc') : null;
+      const accChoice = mounted ? localStorage.getItem('approvedPollAcc') : null;
       let accCostJPY = 78000;
       if (accChoice === 'Nine Hours Namba') accCostJPY = 31500;
       else if (accChoice === 'Hotel Monterey Grasmere') accCostJPY = 108000;
@@ -377,7 +377,7 @@ export default function ChatHubPage() {
       else if (accChoice === 'Ritz-Carlton Kyoto') accCostJPY = 720000;
       const accCostMYR = accCostJPY * 0.0315;
 
-      const likedPlaces = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('tripLikedPlaces') || '[]') : [];
+      const likedPlaces = mounted ? JSON.parse(localStorage.getItem('tripLikedPlaces') || '[]') : [];
       let attrCostJPY = 0;
       if (likedPlaces.includes('Universal Studios Japan')) attrCostJPY += 8600;
       if (likedPlaces.includes('Osaka Castle')) attrCostJPY += 600;

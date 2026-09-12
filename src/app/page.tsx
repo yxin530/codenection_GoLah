@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Search, UserRound, UsersRound, Video } from "lucide-react";
+import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Search, UserRound, UsersRound, Video, Heart } from "lucide-react";
 import { useState } from "react";
 import { TripSetupDrawer } from "@/components/trips/TripSetupDrawer";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -16,14 +16,45 @@ const malaysia = [
   { title: "Food trails through Penang", image: "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80" },
 ];
 const travelPosts = [
-  { title: "Sunrise, street food and a little bit of Seoul", type: "Photo post", image: "https://images.unsplash.com/photo-1538485399081-7c897d5bfbf6?auto=format&fit=crop&w=900&q=80" },
-  { title: "My three-day Kyoto itinerary", type: "Reel", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80" },
-  { title: "Where should I go for my next solo trip?", type: "Text post", image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80" },
-  { title: "A quiet morning in the Cameron Highlands", type: "Photo post", image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80" },
+  { title: "Sunrise, street food and a little bit of Seoul", type: "Photo post", image: "https://images.unsplash.com/photo-1538485399081-7c897d5bfbf6?auto=format&fit=crop&w=900&q=80", authorName: "ami.moment", authorAvatar: "https://i.pravatar.cc/100?img=5", likes: "24.2K" },
+  { title: "My three-day Kyoto itinerary", type: "Reel", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80", authorName: "SENKO", authorAvatar: "https://i.pravatar.cc/100?img=9", likes: "364" },
+  { title: "Where should I go for my next solo trip?", type: "Text post", image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80", authorName: "wanderlust_jx", authorAvatar: "https://i.pravatar.cc/100?img=12", likes: "1.2K" },
+  { title: "A quiet morning in the Cameron Highlands", type: "Photo post", image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80", authorName: "chloe_travels", authorAvatar: "https://i.pravatar.cc/100?img=20", likes: "8,402" },
 ];
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <div className="mb-4 flex items-center justify-between gap-4"><h2 className="text-xl font-extrabold tracking-[-0.03em] text-[#ff6b3d] sm:text-2xl">{children}</h2><button className="flex items-center gap-1 text-sm font-semibold text-[#ff6b3d] transition hover:opacity-70">See all <ChevronRight className="size-4" /></button></div>;
+}
+
+
+function TravelCard({ title, image, video = false, authorName, authorAvatar, likes }: { title: string; image: string; video?: boolean; authorName: string; authorAvatar: string; likes: string }) {
+  return (
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#1e1e20] shadow-sm mb-4">
+      <div className="relative aspect-[3/4] w-full overflow-hidden">
+        <Image src={image} alt={title} fill sizes="(max-width: 640px) 45vw, 280px" className="object-cover transition duration-500 group-hover:scale-105" />
+        {video && (
+          <span className="absolute right-2 top-2 rounded-full bg-black/40 p-1.5 text-white backdrop-blur-sm">
+            <Video className="size-4" fill="currentColor" />
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col gap-2 p-3 text-white">
+        <p className="line-clamp-2 text-sm font-semibold leading-tight">{title}</p>
+        <div className="mt-1 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="relative size-5 overflow-hidden rounded-full">
+              <Image src={authorAvatar} alt={authorName} fill className="object-cover" />
+            </div>
+            <span className="text-xs font-medium text-white/80">{authorName}</span>
+          </div>
+          <div className="flex items-center gap-1 text-white/70">
+            <Heart className="size-3.5" />
+            <span className="text-xs font-medium">{likes}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
 }
 
 function ImageCard({ title, meta, image, video = false }: { title: string; meta?: string; image: string; video?: boolean }) {
@@ -44,7 +75,18 @@ export default function Home() {
     <div className="space-y-8 px-5 pb-32 sm:px-0 sm:pb-36 lg:space-y-10"><section><h1 className="mb-4 text-2xl font-extrabold tracking-[-0.04em] sm:text-3xl">Customise your trip with AI</h1><div className="grid grid-cols-2 overflow-hidden rounded-[24px] bg-[#ff6b3d] text-white"><button onClick={() => openDrawer("Solo Travel")} className="flex min-h-28 w-full items-center gap-3 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UserRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Solo Trip</span></button><button onClick={() => openDrawer("Group Travel")} className="flex min-h-28 w-full items-center gap-3 border-l border-white/80 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UsersRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Group Trip</span></button></div></section>
       <section><SectionHeading>Recommended cheapest flights</SectionHeading><div className="grid grid-cols-2 gap-4 sm:gap-6">{flights.map((flight) => <ImageCard key={flight.title} {...flight} />)}</div></section>
       <section><SectionHeading>Explore Malaysia</SectionHeading><div className="grid grid-cols-2 gap-4 sm:gap-6">{malaysia.map((place) => <ImageCard key={place.title} {...place} />)}</div></section>
-      <section><SectionHeading>Travel For You</SectionHeading><div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">{travelPosts.map((post) => <ImageCard key={post.title} {...post} video={post.type === "Reel"} />)}</div></section>
+      <section>
+        <SectionHeading>Travel For You</SectionHeading>
+        <div className="columns-2 gap-4 sm:columns-3 lg:columns-4 space-y-4">
+          {travelPosts.map((post) => (
+            <TravelCard 
+              key={post.title} 
+              {...post as any} 
+              video={post.type === "Reel"} 
+            />
+          ))}
+        </div>
+      </section>
     </div>
     <BottomNav />
     <TripSetupDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} tripType={tripType} />
