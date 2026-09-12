@@ -61,11 +61,13 @@ const MOCK_ATTRACTIONS = [
 export function AttractionSwiper({ 
   onComplete,
   onSwitchChannel,
-  otherSwiperCompleted
+  otherSwiperCompleted,
+  isSolo
 }: { 
   onComplete?: () => void;
   onSwitchChannel?: (channel: string) => void;
   otherSwiperCompleted?: boolean;
+  isSolo?: boolean;
 }) {
   const [cards, setCards] = useState(MOCK_ATTRACTIONS);
   const [liked, setLiked] = useState<string[]>([]);
@@ -139,19 +141,21 @@ export function AttractionSwiper({
                   </p>
                   <Loader2 className="w-8 h-8 animate-spin text-[#F26C3D]" />
                 </>
-              ) : allMembersFinished ? (
+              ) : allMembersFinished || isSolo ? (
                 <div className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-start p-4 text-center overflow-y-auto scrollbar-none">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2 text-green-600 shrink-0 mt-6">
                     <CheckCircle className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Everyone's Ready!</h3>
+                  <h3 className="text-xl font-bold mb-2">You're all done!</h3>
                   <p className="text-sm text-muted-foreground mb-6">
-                    All group members have finished swiping. The AI agents are now discussing the best plan for you.
+                    {isSolo 
+                      ? "You've finished swiping on attractions. I am now preparing my best recommendations."
+                      : "All group members have finished swiping. The AI agents are now discussing the best plan for you."}
                   </p>
                   
                   <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-6">
                     {otherSwiperCompleted 
-                      ? <>Head over to the <strong>#general</strong> channel to see the agents' debate and discuss with your group!</>
+                      ? <>Head over to the <strong>#general</strong> channel to see my {isSolo ? "final recommendations" : "agents' debate"}!</>
                       : <>You still need to complete your accommodation preferences. Head over to the <strong>#accommodation</strong> channel!</>
                     }
                   </div>

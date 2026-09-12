@@ -1,20 +1,26 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AnalyzingPage() {
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const tripType = searchParams.get('type') || 'group';
+
   // In a real implementation, this would poll an API or wait for an AI response
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Redirect to a placeholder chat hub
-      router.push("/trips/temp-trip-id/chat");
+      if (tripType === 'solo') {
+        router.push("/trips/temp-trip-id/solo-chat");
+      } else {
+        router.push("/trips/temp-trip-id/chat");
+      }
     }, 4000);
     
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, tripType]);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-white text-[#333]">

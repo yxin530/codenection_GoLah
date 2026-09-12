@@ -56,11 +56,13 @@ const MOCK_ACCOMMODATIONS = [
 export function AccommodationSwiper({ 
   onComplete,
   onSwitchChannel,
-  otherSwiperCompleted
+  otherSwiperCompleted,
+  isSolo
 }: { 
   onComplete?: () => void;
   onSwitchChannel?: (channel: string) => void;
   otherSwiperCompleted?: boolean;
+  isSolo?: boolean;
 }) {
   const [cards, setCards] = useState(MOCK_ACCOMMODATIONS);
   const [liked, setLiked] = useState<string[]>([]);
@@ -102,14 +104,14 @@ export function AccommodationSwiper({
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2 text-blue-600 shrink-0 mt-6">
                 <BedDouble className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Swiping Complete!</h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                You've reviewed all hotel recommendations. The AI agents are now discussing the best choice for you.
+              <h3 className="text-xl font-bold mb-2">You're all set!</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                You've reviewed all hotel recommendations.
               </p>
               
               <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-4">
                 {otherSwiperCompleted 
-                  ? "Your accommodation preferences have been saved. Head over to #general to see the debate!"
+                  ? `Your accommodation preferences have been saved. Head over to #general to see ${isSolo ? 'my recommendations' : 'the debate'}!`
                   : "Your accommodation preferences have been saved. You still need to complete your planning preferences in #planning."
                 }
               </div>

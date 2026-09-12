@@ -64,8 +64,8 @@ export function TripSetupDrawer({ isOpen, onClose, tripType }: TripSetupDrawerPr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Route to analyzing placeholder
-    router.push("/analyzing");
+    const typeParam = tripType === "Solo Travel" ? "solo" : "group";
+    router.push(`/analyzing?type=${typeParam}`);
     onClose();
   };
 
