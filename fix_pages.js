@@ -1,4 +1,21 @@
-"use client";
+const fs = require('fs');
+
+// Fix chat page
+const chatPath = 'src/app/(app)/chat/page.tsx';
+let chatContent = fs.readFileSync(chatPath, 'utf8');
+if (!chatContent.includes('<BottomNav />')) {
+  chatContent = chatContent.replace(
+    /<\/div>\n    <\/div>/,
+    `</div>\n      <BottomNav />\n    </div>`
+  );
+  fs.writeFileSync(chatPath, chatContent);
+}
+
+// Fix map page
+const mapPath = 'src/app/map/page.tsx';
+let mapContent = fs.readFileSync(mapPath, 'utf8');
+if (!mapContent.includes('<Input')) {
+  mapContent = `"use client";
 
 import dynamic from "next/dynamic";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -74,3 +91,7 @@ export default function MapPage() {
     </div>
   );
 }
+`;
+  fs.writeFileSync(mapPath, mapContent);
+}
+

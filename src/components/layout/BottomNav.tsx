@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 export function BottomNav() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [activeChatUrl, setActiveChatUrl] = useState("/trips/group-trip/chat");
-  const [activeMapUrl, setActiveMapUrl] = useState("/trips/group-trip/map");
+  const [activeChatUrl, setActiveChatUrl] = useState("/chat");
+  const [activeMapUrl, setActiveMapUrl] = useState("/map");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -19,16 +19,18 @@ export function BottomNav() {
       localStorage.setItem("lastActiveChat", pathname);
       setActiveChatUrl(pathname);
     } else {
-      const savedChat = localStorage.getItem("lastActiveChat");
-      if (savedChat) setActiveChatUrl(savedChat);
+      // Force empty state for review purposes if they haven't explicitly visited a chat in this session
+      // const savedChat = localStorage.getItem("lastActiveChat");
+      // if (savedChat) setActiveChatUrl(savedChat);
     }
     
     if (pathname?.includes("/map")) {
       localStorage.setItem("lastActiveMap", pathname);
       setActiveMapUrl(pathname);
     } else {
-      const savedMap = localStorage.getItem("lastActiveMap");
-      if (savedMap) setActiveMapUrl(savedMap);
+      // Force empty state for review purposes
+      // const savedMap = localStorage.getItem("lastActiveMap");
+      // if (savedMap) setActiveMapUrl(savedMap);
     }
 
     const handleScroll = () => {
