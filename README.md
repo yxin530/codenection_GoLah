@@ -5,8 +5,9 @@
 **Team:** Chor Yun Xin · Ang Jie Ying · Kung Xuan Yu  
 **Problem Statement:** Travel Planner  
 **Video Presentation:** [Unlisted YouTube Link]  
-**Presentation Slides:** [\[Public Link\]](https://canva.link/5y3bbbvc630oqnc)
-**UI Prototype:** [\[Public Link\]](https://codenection-go-lah.vercel.app/)
+**Presentation Slides:** [Public Link](https://canva.link/5y3bbbvc630oqnc)
+**UI Prototype:** [Public Link](https://codenection-go-lah.vercel.app/)
+
 ---
 
 ## 📑 Table of Contents
