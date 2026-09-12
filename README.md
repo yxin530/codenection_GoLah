@@ -228,6 +228,8 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
                   └────────────────────────┘
 ```
 
+![System Architecture](docs/assets/system-architecture.png)
+
 ## 5.3 AI Agent Architecture
 
 GoLah uses a **multi-agent AI architecture**.
