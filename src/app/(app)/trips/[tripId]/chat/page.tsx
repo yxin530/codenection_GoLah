@@ -115,7 +115,7 @@ export default function ChatHubPage() {
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:00 AM"
-            content="Hello! I've finished analyzing your travel preferences. Based on your inputs, I recommend adding Kyoto and Osaka to your itinerary for a good mix of culture and food. Shall we start drafting the daily plan?"
+            content="Hello everyone! I've finished analyzing the group's travel preferences. Based on everyone's inputs, I recommend adding Kyoto and Osaka to your itinerary for a good mix of culture and food. Shall we start drafting the daily plan?"
             animateMessage={initialMessageStep === 0}
             onMessageSent={() => setInitialMessageStep(1)}
           />
@@ -288,7 +288,7 @@ export default function ChatHubPage() {
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:20 AM"
-            content="I've gathered some top attractions in Kyoto and Osaka based on your interests! Let's play a quick game. Swipe right if you'd like to visit, or swipe left to pass. I'll use your votes to build the perfect itinerary."
+            content="I've gathered some top attractions in Kyoto and Osaka based on the group's interests! Let's play a quick game. Swipe right if you'd like to visit, or swipe left to pass. I'll use everyone's votes to build the perfect itinerary."
           />
           <AttractionSwiper 
             otherSwiperCompleted={accommodationCompleted}
@@ -307,7 +307,7 @@ export default function ChatHubPage() {
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:25 AM"
-            content="I've analyzed the best areas to stay in Osaka and Kyoto based on your itinerary. Here are some highly recommended hotels and ryokans! Swipe right to shortlist, or swipe left to pass."
+            content="I've analyzed the best areas to stay in Osaka and Kyoto based on the group's itinerary. Here are some highly recommended hotels and ryokans! Swipe right to shortlist, or swipe left to pass."
           />
           <AccommodationSwiper 
             otherSwiperCompleted={planningCompleted}

@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -13,9 +15,9 @@ function AnalyzingContent() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (tripType === 'solo') {
-        router.push("/trips/temp-trip-id/solo-chat");
+        router.replace("/trips/solo-trip/solo-chat");
       } else {
-        router.push("/trips/temp-trip-id/chat");
+        router.replace("/trips/group-trip/chat");
       }
     }, 4000);
     
