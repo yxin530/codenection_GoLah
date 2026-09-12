@@ -23,6 +23,7 @@ let globalAccommodationCompleted = false;
 const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
 export default function ChatHubPage() {
+  const [mounted, setMounted] = useState(false);
   const [activeChannel, setActiveChannel] = useState<Channel>("general");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
   const [planningCompleted, setPlanningCompleted] = useState(globalPlanningCompleted);
@@ -35,6 +36,10 @@ export default function ChatHubPage() {
   const [topAccs, setTopAccs] = useState<string[]>(['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
   const [initialMessageStep, setInitialMessageStep] = useState(globalInitialStep);
   const [debateMessageStep, setDebateMessageStep] = useState(globalDebateStep);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     globalPlanningCompleted = planningCompleted;
