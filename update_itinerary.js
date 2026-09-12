@@ -1,6 +1,12 @@
-"use client";
+const fs = require('fs');
+const path = 'src/app/(app)/trips/[tripId]/itinerary/page.tsx';
+let content = fs.readFileSync(path, 'utf8');
+
+// I want to rewrite ItineraryPage component and MOCK_ITINERARY completely
+const newCode = `"use client";
+
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Plus, Share2, Download, Calendar, Users, Wallet, Star, Car, Train, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -39,8 +45,6 @@ type ItineraryDay = {
 };
 
 export default function ItineraryPage() {
-  const params = useParams();
-  const isSolo = typeof params?.tripId === 'string' && (params.tripId.includes('solo') || params.tripId === 't1');
   const [itineraryData, setItineraryData] = useState<ItineraryDay[]>([]);
   const router = useRouter();
 
@@ -167,8 +171,8 @@ export default function ItineraryPage() {
         <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:shadow-md transition-all shadow-sm rounded-xl">
           <CardContent className="p-4 flex flex-col items-center text-center gap-1">
             <Users className="w-6 h-6 text-blue-500 mb-1" />
-            <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">Travelers</span>
-            <span className="font-bold text-foreground">{isSolo ? '1 Traveler' : '3 Travelers'}</span>
+            <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">Group</span>
+            <span className="font-bold text-foreground">3 Members</span>
           </CardContent>
         </Card>
         <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:shadow-md transition-all shadow-sm rounded-xl">
@@ -200,14 +204,9 @@ export default function ItineraryPage() {
           <div key={day.id} className="relative z-10">
             {/* Day Header */}
             <div className="flex items-center justify-center mb-8 sticky top-[72px] z-20">
-              <div className="bg-background/80 backdrop-blur-md px-6 py-2 rounded-full border border-border shadow-sm text-center flex items-center gap-4">
-                <div className="text-left">
-                  <h3 className="text-lg font-bold text-[#F26C3D]">{day.day}</h3>
-                  <p className="text-xs font-semibold text-muted-foreground">{day.date}</p>
-                </div>
-                <Button variant="outline" size="sm" className="rounded-full h-8 text-xs gap-1 border-[#F26C3D]/30 hover:bg-[#F26C3D]/10 text-[#F26C3D]" onClick={(e) => { e.stopPropagation(); router.push('/trips/123/map?day=' + dayIdx); }}>
-                  <MapPin className="w-3 h-3" /> View Route
-                </Button>
+              <div className="bg-background/80 backdrop-blur-md px-6 py-2 rounded-full border border-border shadow-sm text-center">
+                <h3 className="text-lg font-bold text-[#F26C3D]">{day.day}</h3>
+                <p className="text-xs font-semibold text-muted-foreground">{day.date}</p>
               </div>
             </div>
 
@@ -226,7 +225,7 @@ export default function ItineraryPage() {
                       className="flex flex-col md:flex-row gap-6 items-center w-full group cursor-pointer"
                       onClick={() => {
                          if (item.title) {
-                            router.push(`/trips/123/map?location=${encodeURIComponent(item.title)}`);
+                            router.push(\`/trips/123/map?location=\${encodeURIComponent(item.title)}\`);
                          }
                       }}
                     >
@@ -290,3 +289,6 @@ export default function ItineraryPage() {
     </div>
   );
 }
+`
+
+fs.writeFileSync(path, newCode);

@@ -20,14 +20,19 @@ let globalDebateStep = -1;
 let globalPlanningCompleted = false;
 let globalAccommodationCompleted = false;
 
+const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
 export default function ChatHubPage() {
   const [activeChannel, setActiveChannel] = useState<Channel>("general");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
   const [planningCompleted, setPlanningCompleted] = useState(globalPlanningCompleted);
   const [accommodationCompleted, setAccommodationCompleted] = useState(globalAccommodationCompleted);
   const swipingCompleted = planningCompleted && accommodationCompleted;
-  const [debateStage, setDebateStage] = useState<'idle' | 'poll' | 'approval' | 'added'>('idle');
-  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ 'Kuromon Market': 1, 'Osaka Castle': 1, 'Kyoto Ryokan Kinoe': 0 });
+  const [debateStage, setDebateStage] = useState<'idle' | 'poll_acc' | 'approval_acc' | 'poll_plan' | 'approval_plan' | 'added'>('idle');
+  const [pollAccVotes, setPollAccVotes] = useState<Record<string, number>>({ 'Kyoto Ryokan Kinoe': 1, 'Nine Hours Namba': 1, 'Hotel Monterey Grasmere': 0 });
+  const [pollPlanVotes, setPollPlanVotes] = useState<Record<string, number>>({ 'Kuromon Market': 1, 'Osaka Castle': 1 });
+  const [topPlaces, setTopPlaces] = useState<string[]>(['Universal Studios Japan', 'Osaka Castle']);
+  const [topAccs, setTopAccs] = useState<string[]>(['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
   const [initialMessageStep, setInitialMessageStep] = useState(globalInitialStep);
   const [debateMessageStep, setDebateMessageStep] = useState(globalDebateStep);
 
@@ -69,7 +74,7 @@ export default function ChatHubPage() {
       {swipingCompleted && (
         <Button
           variant="ghost"
-          onClick={() => router.push('/trips/trip-123/itinerary')}
+          onClick={() => router.push('/trips/group-trip-123/itinerary')}
           className="w-full justify-start h-8 text-sm font-medium px-2 text-muted-foreground hover:text-foreground"
         >
           <Compass className="w-4 h-4 mr-1.5 opacity-70" /> itinerary
@@ -170,8 +175,8 @@ export default function ChatHubPage() {
 
               {debateMessageStep >= 1 && <MessageBubble
                 id="ai-usj"
-                senderName="Universal Studios Agent"
-                avatarInitials="USJ"
+                senderName={`${topPlaces[0]} Agent`}
+                avatarInitials={getInitials(topPlaces[0])}
                 isAgent={true}
                 timestamp="10:21 AM"
                 content="Since everyone loved Universal Studios and Osaka Castle, let's prioritize USJ for the adrenaline rush. We need a whole day for that!"
@@ -181,19 +186,19 @@ export default function ChatHubPage() {
 
               {debateMessageStep >= 2 && <MessageBubble
                 id="ai-castle"
-                senderName="Osaka Castle Agent"
-                avatarInitials="OC"
+                senderName={`${topPlaces[1]} Agent`}
+                avatarInitials={getInitials(topPlaces[1])}
                 isAgent={true}
                 timestamp="10:21 AM"
-                content="But Osaka Castle is so relaxing and historical! We should do that in the morning when it's less crowded and grab matcha nearby."
+                content={`But ${topPlaces[1]} is such a classic experience! We should do that in the morning when it's less crowded.`}
                 animateMessage={debateMessageStep === 2}
                 onMessageSent={() => setDebateMessageStep(3)}
               />}
 
               {debateMessageStep >= 3 && <MessageBubble
                 id="ai-namba"
-                senderName="Nine Hours Namba Agent"
-                avatarInitials="NH"
+                senderName={`${topAccs[0]} Agent`}
+                avatarInitials={getInitials(topAccs[0])}
                 isAgent={true}
                 timestamp="10:22 AM"
                 content="For accommodation, I strongly recommend Nine Hours Namba. Since you guys plan to spend most of your time exploring, it's only $35/night. We can use the extra budget for an amazing Wagyu dinner!"
@@ -203,11 +208,11 @@ export default function ChatHubPage() {
 
               {debateMessageStep >= 4 && <MessageBubble
                 id="ai-kinoe"
-                senderName="Kyoto Ryokan Kinoe Agent"
-                avatarInitials="KR"
+                senderName={`${topAccs[1]} Agent`}
+                avatarInitials={getInitials(topAccs[1])}
                 isAgent={true}
                 timestamp="10:22 AM"
-                content="I disagree! The whole point of going to Kyoto is the experience. Kyoto Ryokan Kinoe offers an authentic tatami room and a public bath. It's totally worth the splurge!"
+                content={`I disagree! ${topAccs[1]} offers a much more unique experience. It's totally worth it for the memories!`}
                 animateMessage={debateMessageStep === 4}
                 onMessageSent={() => setDebateMessageStep(5)}
               />}
@@ -226,7 +231,7 @@ export default function ChatHubPage() {
               {debateMessageStep >= 6 && debateStage === 'idle' && <div className="flex gap-4 justify-center mt-6 mb-8">
                 <Button
                   className="bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md relative overflow-hidden"
-                  onClick={() => setDebateStage('poll')}
+                  onClick={() => setDebateStage('poll_acc')}
                 >
                   Let us choose <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
@@ -235,20 +240,20 @@ export default function ChatHubPage() {
                 </Button>
               </div>}
 
-              {debateStage === 'poll' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Group poll generated</div>
-                  <p className="text-sm text-muted-foreground mb-4">Vote for the place you want us to prioritize in the itinerary.</p>
+              {debateStage === 'poll_acc' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm mb-4">
+                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Accommodation Poll</div>
+                  <p className="text-sm text-muted-foreground mb-4">Vote for the accommodation you want us to prioritize.</p>
                   <div className="space-y-2">
-                    {Object.entries(pollVotes).map(([place, votes]) => {
-                      const totalVotes = Object.values(pollVotes).reduce((a, b) => a + b, 0);
+                    {Object.entries(pollAccVotes).map(([place, votes]) => {
+                      const totalVotes = Object.values(pollAccVotes).reduce((a, b) => a + b, 0);
                       const isMaxVotes = totalVotes >= 3;
                       return (
                         <Button 
                           key={place} 
                           variant="outline" 
                           className="w-full justify-between h-auto py-2" 
-                          onClick={() => setPollVotes(current => ({ ...current, [place]: current[place] + 1 }))}
+                          onClick={() => setPollAccVotes(current => ({ ...current, [place]: current[place] + 1 }))}
                           disabled={isMaxVotes}
                         >
                           <span>{place}</span><span className="text-xs text-muted-foreground">{votes} vote{votes === 1 ? '' : 's'}</span>
@@ -256,23 +261,64 @@ export default function ChatHubPage() {
                       );
                     })}
                   </div>
-                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval')}>Finish voting</Button>
+                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval_acc')}>Finish voting</Button>
                 </div>
               )}
 
-              {debateStage === 'approval' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm">
-                  <p className="font-semibold">The group winner is {Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
-                  <p className="text-sm text-muted-foreground mt-1">It received the most votes. Add it to Day 3 of the itinerary?</p>
+              {debateStage === 'approval_acc' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm mb-4">
+                  <p className="font-semibold text-black">The accommodation winner is {Object.entries(pollAccVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
+                  <p className="text-sm text-muted-foreground mt-1">It received the most votes. Use this as your group's accommodation?</p>
                   <div className="flex gap-2 mt-4">
-                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollPlace', Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('added'); }}>Approve & add</Button>
-                    <Button variant="outline" onClick={() => setDebateStage('poll')}>Back to poll</Button>
+                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollAcc', Object.entries(pollAccVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('poll_plan'); }}>Approve</Button>
+                    <Button variant="outline" className="text-black" onClick={() => setDebateStage('poll_acc')}>Back to poll</Button>
+                  </div>
+                </div>
+              )}
+
+              {debateStage === 'poll_plan' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm mb-4">
+                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Attraction Poll</div>
+                  <p className="text-sm text-muted-foreground mb-4">Vote for the attraction you want us to add to the itinerary.</p>
+                  <div className="space-y-2">
+                    {Object.entries(pollPlanVotes).map(([place, votes]) => {
+                      const totalVotes = Object.values(pollPlanVotes).reduce((a, b) => a + b, 0);
+                      const isMaxVotes = totalVotes >= 3;
+                      return (
+                        <Button 
+                          key={place} 
+                          variant="outline" 
+                          className="w-full justify-between h-auto py-2" 
+                          onClick={() => setPollPlanVotes(current => ({ ...current, [place]: current[place] + 1 }))}
+                          disabled={isMaxVotes}
+                        >
+                          <span>{place}</span><span className="text-xs text-muted-foreground">{votes} vote{votes === 1 ? '' : 's'}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval_plan')}>Finish voting</Button>
+                </div>
+              )}
+
+              {debateStage === 'approval_plan' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm mb-4">
+                  <p className="font-semibold text-black">The attraction winner is {Object.entries(pollPlanVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
+                  <p className="text-sm text-muted-foreground mt-1">It received the most votes. Add it to your itinerary?</p>
+                  <div className="flex gap-2 mt-4">
+                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollPlace', Object.entries(pollPlanVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('added'); }}>Approve & add</Button>
+                    <Button variant="outline" className="text-black" onClick={() => setDebateStage('poll_plan')}>Back to poll</Button>
                   </div>
                 </div>
               )}
 
               {debateStage === 'added' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-green-200 bg-green-50/60 p-4 text-sm text-green-800 flex items-center gap-2"><Check className="w-4 h-4" /> {Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]} was added to your itinerary.</div>
+                <div className="ml-12 max-w-md rounded-2xl border border-green-200 bg-green-50/60 p-4 text-sm text-green-800 flex flex-col gap-2 mb-4">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <Check className="w-4 h-4" /> Voting Complete!
+                  </div>
+                  <p className="text-green-700">The itinerary has been updated with your group's choices!</p>
+                </div>
               )}
             </>
           )}
@@ -319,6 +365,32 @@ export default function ChatHubPage() {
     }
 
     if (activeChannel === "expenses") {
+      const flightCostUSD = 450;
+      const flightCostMYR = flightCostUSD * 4.70;
+      
+      const accChoice = typeof window !== 'undefined' ? localStorage.getItem('approvedPollAcc') : null;
+      let accCostJPY = 78000;
+      if (accChoice === 'Nine Hours Namba') accCostJPY = 31500;
+      else if (accChoice === 'Hotel Monterey Grasmere') accCostJPY = 108000;
+      else if (accChoice === 'Kyoto Ryokan Kinoe') accCostJPY = 270000;
+      else if (accChoice === 'Cross Hotel Osaka') accCostJPY = 135000;
+      else if (accChoice === 'Ritz-Carlton Kyoto') accCostJPY = 720000;
+      const accCostMYR = accCostJPY * 0.0315;
+
+      const likedPlaces = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('tripLikedPlaces') || '[]') : [];
+      let attrCostJPY = 0;
+      if (likedPlaces.includes('Universal Studios Japan')) attrCostJPY += 8600;
+      if (likedPlaces.includes('Osaka Castle')) attrCostJPY += 600;
+      const attrCostMYR = attrCostJPY * 0.0315;
+
+      const foodCostJPY = 24500;
+      const foodCostMYR = foodCostJPY * 0.0315;
+
+      const transportCostJPY = 16000;
+      const transportCostMYR = transportCostJPY * 0.0315;
+
+      const totalMYR = flightCostMYR + accCostMYR + attrCostMYR + foodCostMYR + transportCostMYR;
+
       return (
         <>
           <MessageBubble
@@ -326,14 +398,23 @@ export default function ChatHubPage() {
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:30 AM"
-            content="Here is a preliminary budget breakdown for your trip to Japan:"
+            content="Here is a dynamic budget breakdown based on the group's chosen itinerary:"
           />
           <div className="bg-card border border-border rounded-xl p-4 shadow-sm w-full max-w-lg ml-12">
             <div className="flex items-start justify-between border-b pb-3 mb-3"><div><h3 className="font-semibold">Estimated trip spend per pax</h3><p className="text-xs text-muted-foreground mt-1">Mock conversion: USD 1 ≈ MYR 4.70 • JPY 100 ≈ MYR 3.15</p></div><span className="text-xs rounded-full bg-muted px-2 py-1">7 days</span></div>
             <div className="space-y-3 text-sm">
-              {[['Flights', 'USD 450', '≈ MYR 2,115'], ['Accommodation · 6 nights', 'JPY 78,000', '≈ MYR 2,457'], ['USJ + attractions', 'JPY 18,000', '≈ MYR 567'], ['Food · JPY 3,500/day', 'JPY 24,500', '≈ MYR 772'], ['Local transport', 'JPY 16,000', '≈ MYR 504']].map(([label, original, converted]) => <div key={label} className="flex justify-between gap-4"><div><p className="font-medium">{label}</p><p className="text-xs text-muted-foreground">{original}</p></div><span className="font-medium text-right">{converted}</span></div>)}
-              <div className="border-t pt-3 mt-2 flex justify-between font-bold text-[#ff6b3d]"><span>Estimated total</span><span>≈ MYR 6,415</span></div>
-              <p className="text-xs text-muted-foreground">Budget range: MYR 5,800–7,100 depending on hotel, meals, and shopping.</p>
+              <div className="flex justify-between gap-4"><div><p className="font-medium">Flights</p><p className="text-xs text-muted-foreground">USD {flightCostUSD}</p></div><span className="font-medium text-right">≈ MYR {flightCostMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              
+              <div className="flex justify-between gap-4"><div><p className="font-medium">Accommodation ({accChoice || 'Standard'})</p><p className="text-xs text-muted-foreground">JPY {accCostJPY.toLocaleString()}</p></div><span className="font-medium text-right">≈ MYR {accCostMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              
+              <div className="flex justify-between gap-4"><div><p className="font-medium">Attractions ({likedPlaces.length} selected)</p><p className="text-xs text-muted-foreground">JPY {attrCostJPY.toLocaleString()}</p></div><span className="font-medium text-right">≈ MYR {attrCostMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              
+              <div className="flex justify-between gap-4"><div><p className="font-medium">Food</p><p className="text-xs text-muted-foreground">JPY {foodCostJPY.toLocaleString()}</p></div><span className="font-medium text-right">≈ MYR {foodCostMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              
+              <div className="flex justify-between gap-4"><div><p className="font-medium">Local transport</p><p className="text-xs text-muted-foreground">JPY {transportCostJPY.toLocaleString()}</p></div><span className="font-medium text-right">≈ MYR {transportCostMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              
+              <div className="border-t pt-3 mt-2 flex justify-between font-bold text-[#ff6b3d]"><span>Estimated total</span><span>≈ MYR {totalMYR.toLocaleString('en-US', {maximumFractionDigits:0})}</span></div>
+              <p className="text-xs text-muted-foreground">Budget range: MYR {(totalMYR * 0.9).toLocaleString('en-US', {maximumFractionDigits:0})}–{(totalMYR * 1.1).toLocaleString('en-US', {maximumFractionDigits:0})} depending on actual meals and shopping.</p>
             </div>
           </div>
         </>

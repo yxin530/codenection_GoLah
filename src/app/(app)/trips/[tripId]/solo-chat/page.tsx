@@ -20,14 +20,17 @@ let globalDebateStep = -1;
 let globalPlanningCompleted = false;
 let globalAccommodationCompleted = false;
 
+const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
 export default function ChatHubPage() {
   const [activeChannel, setActiveChannel] = useState<Channel>("general");
   const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
   const [planningCompleted, setPlanningCompleted] = useState(globalPlanningCompleted);
   const [accommodationCompleted, setAccommodationCompleted] = useState(globalAccommodationCompleted);
   const swipingCompleted = planningCompleted && accommodationCompleted;
-  const [debateStage, setDebateStage] = useState<'idle' | 'poll' | 'approval' | 'added'>('idle');
-  const [pollVotes, setPollVotes] = useState<Record<string, number>>({ 'Kuromon Market': 0, 'Osaka Castle': 0, 'Kyoto Ryokan Kinoe': 0 });
+  const [debateStage, setDebateStage] = useState<'idle' | 'poll_acc' | 'approval_acc' | 'poll_plan' | 'approval_plan' | 'added'>('idle');
+  const [pollAccVotes, setPollAccVotes] = useState<Record<string, number>>({ 'Kyoto Ryokan Kinoe': 0, 'Nine Hours Namba': 0, 'Hotel Monterey Grasmere': 0 });
+  const [pollPlanVotes, setPollPlanVotes] = useState<Record<string, number>>({ 'Kuromon Market': 0, 'Osaka Castle': 0 });
   const [initialMessageStep, setInitialMessageStep] = useState(globalInitialStep);
   const [debateMessageStep, setDebateMessageStep] = useState(globalDebateStep);
 
@@ -45,8 +48,38 @@ export default function ChatHubPage() {
   }, [debateMessageStep]);
   const router = useRouter();
 
+  const [topPlaces, setTopPlaces] = useState<string[]>(['Universal Studios Japan', 'Osaka Castle']);
+  const [topAccs, setTopAccs] = useState<string[]>(['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
+  const [skipDebate, setSkipDebate] = useState(false);
+
   useEffect(() => {
     if (swipingCompleted) {
+      const likedPlaces = JSON.parse(localStorage.getItem('tripLikedPlaces') || '[]');
+      const likedAccs = JSON.parse(localStorage.getItem('tripLikedAccs') || '[]');
+
+      if (likedPlaces.length < 2 && likedAccs.length < 2) {
+        setSkipDebate(true);
+        if (likedPlaces.length >= 1) localStorage.setItem('approvedPollPlace', likedPlaces[0]);
+        if (likedAccs.length >= 1) localStorage.setItem('approvedPollAcc', likedAccs[0]);
+      } else {
+        setSkipDebate(false);
+        const newTopPlaces = likedPlaces.length >= 2 ? likedPlaces.slice(0, 2) : 
+                            (likedPlaces.length === 1 ? [likedPlaces[0], 'Osaka Castle'] : ['Universal Studios Japan', 'Osaka Castle']);
+        setTopPlaces(newTopPlaces);
+        
+        const newTopAccs = likedAccs.length >= 2 ? likedAccs.slice(0, 2) : 
+                          (likedAccs.length === 1 ? [likedAccs[0], 'Kyoto Ryokan Kinoe'] : ['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
+        setTopAccs(newTopAccs);
+
+        const accObj: Record<string, number> = {};
+        newTopAccs.forEach((a: string) => accObj[a] = 0);
+        setPollAccVotes(accObj);
+
+        const pObj: Record<string, number> = {};
+        newTopPlaces.forEach((p: string) => pObj[p] = 0);
+        setPollPlanVotes(pObj);
+      }
+
       setInitialMessageStep(4);
       setDebateMessageStep(0);
     }
@@ -69,7 +102,7 @@ export default function ChatHubPage() {
       {swipingCompleted && (
         <Button
           variant="ghost"
-          onClick={() => router.push('/trips/trip-123/itinerary')}
+          onClick={() => router.push('/trips/solo-trip-123/itinerary')}
           className="w-full justify-start h-8 text-sm font-medium px-2 text-muted-foreground hover:text-foreground"
         >
           <Compass className="w-4 h-4 mr-1.5 opacity-70" /> itinerary
@@ -148,66 +181,77 @@ export default function ChatHubPage() {
                 </span>
               </div>
 
-              {debateMessageStep >= 0 && <MessageBubble
-                id="plan-start"
-                senderName="GoLah AI"
-                isAgent={true}
-                timestamp="10:20 AM"
-                content="You have finished swiping on Attractions and Accommodations! Based on your preferences, my sub-agents have differing opinions. Let's hear them out!"
-                animateMessage={debateMessageStep === 0}
-                onMessageSent={() => setDebateMessageStep(1)}
-              />}
+              {skipDebate ? (
+                <div className="ml-12 max-w-md rounded-2xl border border-green-200 bg-green-50/60 p-4 text-sm text-green-800 flex flex-col gap-2 mb-4 mt-6">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <Check className="w-4 h-4" /> Planning Complete!
+                  </div>
+                  <p className="text-green-700">Since you had very clear preferences, we've automatically built your itinerary. Check it out!</p>
+                </div>
+              ) : (
+                <>
+                  {debateMessageStep >= 0 && <MessageBubble
+                    id="plan-start"
+                    senderName="GoLah AI"
+                    isAgent={true}
+                    timestamp="10:20 AM"
+                    content="You have finished swiping on Attractions and Accommodations! Based on your preferences, my sub-agents have differing opinions. Let's hear them out!"
+                    animateMessage={debateMessageStep === 0}
+                    onMessageSent={() => setDebateMessageStep(1)}
+                  />}
 
-              {debateMessageStep >= 1 && <MessageBubble
-                id="ai-usj"
-                senderName="Universal Studios Agent"
-                avatarInitials="USJ"
-                isAgent={true}
-                timestamp="10:21 AM"
-                content="Since you loved Universal Studios and Osaka Castle, let's prioritize USJ for the adrenaline rush. You need a whole day for that!"
-                animateMessage={debateMessageStep === 1}
-                onMessageSent={() => setDebateMessageStep(2)}
-              />}
+                  {debateMessageStep >= 1 && <MessageBubble
+                    id="ai-place1"
+                    senderName={`${topPlaces[0]} Agent`}
+                    avatarInitials={getInitials(topPlaces[0])}
+                    isAgent={true}
+                    timestamp="10:21 AM"
+                    content={`Since you loved your options, let's prioritize ${topPlaces[0]}! It perfectly matches your vibe.`}
+                    animateMessage={debateMessageStep === 1}
+                    onMessageSent={() => setDebateMessageStep(2)}
+                  />}
 
-              {debateMessageStep >= 2 && <MessageBubble
-                id="ai-castle"
-                senderName="Osaka Castle Agent"
-                avatarInitials="OC"
-                isAgent={true}
-                timestamp="10:21 AM"
-                content="But Osaka Castle is so relaxing and historical! We should do that in the morning when it's less crowded and grab matcha nearby."
-                animateMessage={debateMessageStep === 2}
-                onMessageSent={() => setDebateMessageStep(3)}
-              />}
+                  {debateMessageStep >= 2 && <MessageBubble
+                    id="ai-place2"
+                    senderName={`${topPlaces[1]} Agent`}
+                    avatarInitials={getInitials(topPlaces[1])}
+                    isAgent={true}
+                    timestamp="10:21 AM"
+                    content={`But ${topPlaces[1]} is such a classic experience! We should do that in the morning when it's less crowded.`}
+                    animateMessage={debateMessageStep === 2}
+                    onMessageSent={() => setDebateMessageStep(3)}
+                  />}
 
-              {debateMessageStep >= 3 && <MessageBubble
-                id="ai-namba"
-                senderName="Nine Hours Namba Agent"
-                avatarInitials="NH"
-                isAgent={true}
-                timestamp="10:22 AM"
-                content="For accommodation, I strongly recommend Nine Hours Namba. Since you plan to spend most of your time exploring, it's only $35/night. You can use the extra budget for an amazing Wagyu dinner!"
-                animateMessage={debateMessageStep === 3}
-                onMessageSent={() => setDebateMessageStep(4)}
-              />}
+                  {debateMessageStep >= 3 && <MessageBubble
+                    id="ai-acc1"
+                    senderName={`${topAccs[0]} Agent`}
+                    avatarInitials={getInitials(topAccs[0])}
+                    isAgent={true}
+                    timestamp="10:22 AM"
+                    content={`For accommodation, I strongly recommend ${topAccs[0]}. It's highly preferred by you and located in a great area!`}
+                    animateMessage={debateMessageStep === 3}
+                    onMessageSent={() => setDebateMessageStep(4)}
+                  />}
 
-              {debateMessageStep >= 4 && <MessageBubble
-                id="ai-kinoe"
-                senderName="Kyoto Ryokan Kinoe Agent"
-                avatarInitials="KR"
-                isAgent={true}
-                timestamp="10:22 AM"
-                content="I disagree! The whole point of going to Kyoto is the experience. Kyoto Ryokan Kinoe offers an authentic tatami room and a public bath. It's totally worth the splurge!"
-                animateMessage={debateMessageStep === 4}
-                onMessageSent={() => setDebateMessageStep(5)}
-              />}
+                  {debateMessageStep >= 4 && <MessageBubble
+                    id="ai-acc2"
+                    senderName={`${topAccs[1]} Agent`}
+                    avatarInitials={getInitials(topAccs[1])}
+                    isAgent={true}
+                    timestamp="10:22 AM"
+                    content={`I disagree! ${topAccs[1]} offers a much more unique experience. It's totally worth it!`}
+                    animateMessage={debateMessageStep === 4}
+                    onMessageSent={() => setDebateMessageStep(5)}
+                  />}
+                </>
+              )}
 
 
 
-              {debateMessageStep >= 5 && debateStage === 'idle' && <div className="flex gap-4 justify-center mt-6 mb-8">
+              {!skipDebate && debateMessageStep >= 5 && debateStage === 'idle' && <div className="flex gap-4 justify-center mt-6 mb-8">
                 <Button
                   className="bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md relative overflow-hidden"
-                  onClick={() => setDebateStage('poll')}
+                  onClick={() => setDebateStage('poll_acc')}
                 >
                   Let me choose <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
@@ -216,20 +260,20 @@ export default function ChatHubPage() {
                 </Button>
               </div>}
 
-              {debateStage === 'poll' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Decision Poll</div>
-                  <p className="text-sm text-muted-foreground mb-4">Vote for the place you want to prioritize in the itinerary.</p>
+              {!skipDebate && debateStage === 'poll_acc' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm mb-4">
+                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Accommodation Poll</div>
+                  <p className="text-sm text-muted-foreground mb-4">Vote for the accommodation you want to prioritize.</p>
                   <div className="space-y-2">
-                    {Object.entries(pollVotes).map(([place, votes]) => {
-                      const totalVotes = Object.values(pollVotes).reduce((a, b) => a + b, 0);
+                    {Object.entries(pollAccVotes).map(([place, votes]) => {
+                      const totalVotes = Object.values(pollAccVotes).reduce((a, b) => a + b, 0);
                       const isMaxVotes = totalVotes >= 1;
                       return (
                         <Button 
                           key={place} 
                           variant="outline" 
                           className="w-full justify-between h-auto py-2" 
-                          onClick={() => setPollVotes(current => ({ ...current, [place]: current[place] + 1 }))}
+                          onClick={() => setPollAccVotes(current => ({ ...current, [place]: current[place] + 1 }))}
                           disabled={isMaxVotes}
                         >
                           <span>{place}</span><span className="text-xs text-muted-foreground">{votes} vote{votes === 1 ? '' : 's'}</span>
@@ -237,23 +281,64 @@ export default function ChatHubPage() {
                       );
                     })}
                   </div>
-                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval')}>Finish voting</Button>
+                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval_acc')}>Finish voting</Button>
                 </div>
               )}
 
-              {debateStage === 'approval' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm">
-                  <p className="font-semibold">Your choice is {Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Add it to Day 3 of the itinerary?</p>
+              {!skipDebate && debateStage === 'approval_acc' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm mb-4">
+                  <p className="font-semibold text-black">Your choice is {Object.entries(pollAccVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Use this as your accommodation?</p>
                   <div className="flex gap-2 mt-4">
-                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollPlace', Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('added'); }}>Approve & add</Button>
-                    <Button variant="outline" onClick={() => setDebateStage('poll')}>Back to poll</Button>
+                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollAcc', Object.entries(pollAccVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('poll_plan'); }}>Approve</Button>
+                    <Button variant="outline" className="text-black" onClick={() => setDebateStage('poll_acc')}>Back to poll</Button>
                   </div>
                 </div>
               )}
 
-              {debateStage === 'added' && (
-                <div className="ml-12 max-w-md rounded-2xl border border-green-200 bg-green-50/60 p-4 text-sm text-green-800 flex items-center gap-2"><Check className="w-4 h-4" /> {Object.entries(pollVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]} was added to your itinerary.</div>
+              {!skipDebate && debateStage === 'poll_plan' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-[#F26C3D]/30 bg-card p-5 shadow-sm mb-4">
+                  <div className="flex items-center gap-2 mb-2 font-semibold"><Vote className="w-4 h-4 text-[#F26C3D]" /> Attraction Poll</div>
+                  <p className="text-sm text-muted-foreground mb-4">Vote for the attraction you want to add to the itinerary.</p>
+                  <div className="space-y-2">
+                    {Object.entries(pollPlanVotes).map(([place, votes]) => {
+                      const totalVotes = Object.values(pollPlanVotes).reduce((a, b) => a + b, 0);
+                      const isMaxVotes = totalVotes >= 1;
+                      return (
+                        <Button 
+                          key={place} 
+                          variant="outline" 
+                          className="w-full justify-between h-auto py-2" 
+                          onClick={() => setPollPlanVotes(current => ({ ...current, [place]: current[place] + 1 }))}
+                          disabled={isMaxVotes}
+                        >
+                          <span>{place}</span><span className="text-xs text-muted-foreground">{votes} vote{votes === 1 ? '' : 's'}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <Button className="w-full mt-4 bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => setDebateStage('approval_plan')}>Finish voting</Button>
+                </div>
+              )}
+
+              {!skipDebate && debateStage === 'approval_plan' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-amber-200 bg-amber-50/60 p-5 shadow-sm mb-4">
+                  <p className="font-semibold text-black">Your choice is {Object.entries(pollPlanVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Add it to your itinerary?</p>
+                  <div className="flex gap-2 mt-4">
+                    <Button className="bg-[#F26C3D] hover:bg-[#d85e33] text-white" onClick={() => { localStorage.setItem('approvedPollPlace', Object.entries(pollPlanVotes).reduce((a, b) => a[1] > b[1] ? a : b)[0]); setDebateStage('added'); }}>Approve & add</Button>
+                    <Button variant="outline" className="text-black" onClick={() => setDebateStage('poll_plan')}>Back to poll</Button>
+                  </div>
+                </div>
+              )}
+
+              {!skipDebate && debateStage === 'added' && (
+                <div className="ml-12 max-w-md rounded-2xl border border-green-200 bg-green-50/60 p-4 text-sm text-green-800 flex flex-col gap-2 mb-4">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <Check className="w-4 h-4" /> Voting Complete!
+                  </div>
+                  <p className="text-green-700">The itinerary has been updated with your choices!</p>
+                </div>
               )}
             </>
           )}

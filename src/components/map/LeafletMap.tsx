@@ -16,17 +16,19 @@ L.Icon.Default.mergeOptions({
 
 function MapBoundsUpdater({ positions }: { positions: [number, number][] }) {
   const map = useMap();
+  const posString = JSON.stringify(positions);
   useEffect(() => {
     if (positions.length > 0) {
       const bounds = L.latLngBounds(positions);
       map.fitBounds(bounds, { padding: [50, 50] });
     }
-  }, [positions, map]);
+  }, [posString, map]);
   return null;
 }
 
-export default function LeafletMap({ stops = [] }: { stops?: { name: string, lat: number, lng: number }[] }) {
+export default function LeafletMap({ stops = [], onMarkerClick, showRoute = true }: { stops?: { name: string, lat: number, lng: number }[], onMarkerClick?: (name: string) => void, showRoute?: boolean }) {
   const [mounted, setMounted] = useState(false);
+  const [lastClicked, setLastClicked] = useState<string>('');
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -51,14 +53,26 @@ export default function LeafletMap({ stops = [] }: { stops?: { name: string, lat
       />
       
       {stops.map((stop, index) => (
-        <Marker key={index} position={[stop.lat, stop.lng]}>
+        <Marker 
+          key={index} 
+          position={[stop.lat, stop.lng]}
+          eventHandlers={{
+            click: () => {
+              if (lastClicked === stop.name) {
+                if (onMarkerClick) onMarkerClick(stop.name);
+              } else {
+                setLastClicked(stop.name);
+              }
+            }
+          }}
+        >
           <Popup>
             <div className="font-bold">{stop.name}</div>
           </Popup>
         </Marker>
       ))}
 
-      {positions.length > 1 && (
+      {showRoute && positions.length > 1 && (
         <Polyline 
           positions={positions} 
           color="#3b82f6" 
