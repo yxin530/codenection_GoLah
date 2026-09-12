@@ -97,7 +97,7 @@ The problem tree shows the root causes and consequences of fragmented travel pla
 
 # 3. 🎨 Design & Prototype
 
-**UI Prototype:** [Public Link]
+**UI Prototype:** [[Public Link](https://codenection-go-lah.vercel.app/)]
 
 > 💡 *Check that the prototype opens in an incognito window. Embed or link 4–8 key screens with short captions explaining the main interactions.*
 
@@ -156,7 +156,7 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 ### ⚙️ Backend
 - Node.js
 - Next.js API Routes
-- swagger ui documentation
+- Swagger ui documentation
 
 ### 🗄️ Database & Storage
 - Supabase
@@ -166,17 +166,16 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
 
 ### 🧠 AI
 - LLM: **Gemini AI**
-- Speech-to-Text: **[Provider TBD]**
+- Speech-to-Text: **Deepgram**
 - AI Tool Calling
 - AI Context Management
 
 ### 🗺️ Maps & Travel Services
-- Maps API: **mapbox**
-- Flight/travel information API: **[Provider TBD]**
-- Currency API: **[Provider TBD]**
-- Weather API: **[Provider TBD]**
-
-> Provider choices are intentionally left open while the team evaluates suitable services, pricing, free tiers, API capabilities, and implementation constraints.
+- Maps API: **leaflet** (with OpenStreetMap)
+- Currency API: **frankfurter**
+- Weather API: **openmeteo**
+- Places API: **Google Places**
+- Push Notification Service: **Firebase**
 
 ## 5.2 System Architecture
 
@@ -201,11 +200,11 @@ The Chat Hub introduces Discord-inspired sections inside the group conversation,
         │    Supabase   │      │   External Services  │
         │               │      │                      │
         │ PostgreSQL    │      │ Maps                 │
-        │ Auth          │      │ Flights              │
+        │ Auth          │      │ Push notification    │
         │ Storage       │      │ Currency             │
-        │ Realtime      │      │ Weather              │
-        └───────┬───────┘      │ Speech-to-Text       │
-                │              │                      │
+        │ Realtime      │      │ Places               │
+        └───────┬───────┘      │ Weather              │
+                │              │ Speech-to-Text       │
                 │              └──────────┬───────────┘
                 └────────────┬────────────┘
                              ▼
