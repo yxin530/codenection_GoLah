@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, Plus, Share2, Download, Calendar, Users, Wallet, Star, Car, Train, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Plus, Share2, Download, Calendar, Users, Wallet, Star, Car, Train, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const MOCK_ITINERARY = [
@@ -41,8 +43,27 @@ const MOCK_ITINERARY = [
   }
 ];
 
+type ItineraryDay = {
+  id: number;
+  day: string;
+  date: string;
+  items: Array<{
+    type: string;
+    time?: string;
+    title?: string;
+    location?: string;
+    image?: string;
+    mode?: string;
+    duration?: string;
+    tags?: string[];
+    note?: string;
+    rating?: number;
+  }>;
+};
+
 export default function ItineraryPage() {
-  const [itineraryData, setItineraryData] = useState(MOCK_ITINERARY);
+  const [itineraryData, setItineraryData] = useState<ItineraryDay[]>(MOCK_ITINERARY);
+  const router = useRouter();
 
   useEffect(() => {
     const dislikedStr = localStorage.getItem('tripDislikedPlaces');
@@ -57,10 +78,20 @@ export default function ItineraryPage() {
       }));
       setItineraryData(filtered);
     }
+    const approvedPlace = localStorage.getItem('approvedPollPlace');
+    if (approvedPlace) {
+      setItineraryData(current => current.map(day => day.id === 3 && !day.items.some(item => item.title === approvedPlace) ? { ...day, items: [{ time: '11:00', title: approvedPlace, location: 'Osaka, Japan', type: 'activity', tags: ['Group pick', 'AI poll'] }, ...day.items] } : day));
+    }
   }, []);
 
   return (
     <div className="space-y-6 pb-24 max-w-4xl mx-auto">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => router.back()}><ArrowLeft className="w-4 h-4" /> Back</Button>
+        </div>
+        <span className="text-xs text-muted-foreground">Trip itinerary</span>
+      </div>
       {/* Hero Header */}
       <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-xl mb-8 group">
         <div 
@@ -215,4 +246,3 @@ export default function ItineraryPage() {
     </div>
   );
 }
-

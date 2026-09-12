@@ -6,7 +6,7 @@ export default function OnboardingPage() {
     <div className="flex flex-col items-center h-full pt-32 pb-16">
       <div className="flex-1 flex flex-col items-center justify-center">
         <AnimatedLogo className="scale-150 mb-4" />
-        <h1 className="text-2xl font-bold text-[#F26C3D] mt-8">GoLah</h1>
+        <img src="/assets/logo.png" alt="GoLah" className="h-14 w-auto mt-8 drop-shadow-md" />
       </div>
       
       <div className="w-full px-8 pb-8">

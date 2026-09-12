@@ -53,7 +53,15 @@ const MOCK_ACCOMMODATIONS = [
   }
 ];
 
-export function AccommodationSwiper({ onComplete }: { onComplete?: () => void }) {
+export function AccommodationSwiper({ 
+  onComplete,
+  onSwitchChannel,
+  otherSwiperCompleted
+}: { 
+  onComplete?: () => void;
+  onSwitchChannel?: (channel: string) => void;
+  otherSwiperCompleted?: boolean;
+}) {
   const [cards, setCards] = useState(MOCK_ACCOMMODATIONS);
   const [liked, setLiked] = useState<string[]>([]);
   const [disliked, setDisliked] = useState<string[]>([]);
@@ -99,23 +107,26 @@ export function AccommodationSwiper({ onComplete }: { onComplete?: () => void })
                 You've reviewed all hotel recommendations. The AI agents are now discussing the best choice for you.
               </p>
               
-              <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-6">
-                Head over to the <strong>#general</strong> channel to see the agents' debate and discuss with your group!
+              <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-4">
+                {otherSwiperCompleted 
+                  ? "Your accommodation preferences have been saved. Head over to #general to see the debate!"
+                  : "Your accommodation preferences have been saved. You still need to complete your planning preferences in #planning."
+                }
               </div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="w-full mt-auto mb-2"
+              
+              <Button 
+                className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white rounded-xl py-6 font-semibold"
+                onClick={() => {
+                  onComplete?.();
+                  if (otherSwiperCompleted) {
+                    onSwitchChannel?.('general');
+                  } else {
+                    onSwitchChannel?.('planning');
+                  }
+                }}
               >
-                <Button 
-                  className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md"
-                  onClick={() => onComplete?.()}
-                >
-                  Go to #general
-                </Button>
-              </motion.div>
+                {otherSwiperCompleted ? "Go to General" : "Go to Planning"}
+              </Button>
             </motion.div>
           ) : (
             cards.map((card, index) => {

@@ -7,8 +7,7 @@ export function Sidebar() {
     <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
-          <Map className="h-6 w-6 text-primary" />
-          <span>GoLah</span>
+          <img src="/assets/logo.png" alt="GoLah" className="h-8 w-auto drop-shadow-md" />
         </div>
       </div>
       

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Info, X, Heart, ExternalLink, Users, Loader2, CheckCircle, Sparkles } from "lucide-react";
+import { MapPin, Info, X, Heart, ExternalLink, Users, Loader2, CheckCircle, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
@@ -58,7 +58,15 @@ const MOCK_ATTRACTIONS = [
   }
 ];
 
-export function AttractionSwiper({ onComplete }: { onComplete?: () => void }) {
+export function AttractionSwiper({ 
+  onComplete,
+  onSwitchChannel,
+  otherSwiperCompleted
+}: { 
+  onComplete?: () => void;
+  onSwitchChannel?: (channel: string) => void;
+  otherSwiperCompleted?: boolean;
+}) {
   const [cards, setCards] = useState(MOCK_ATTRACTIONS);
   const [liked, setLiked] = useState<string[]>([]);
   const [disliked, setDisliked] = useState<string[]>([]);
@@ -142,7 +150,10 @@ export function AttractionSwiper({ onComplete }: { onComplete?: () => void }) {
                   </p>
                   
                   <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-6">
-                    Head over to the <strong>#general</strong> channel to see the agents' debate and discuss with your group!
+                    {otherSwiperCompleted 
+                      ? <>Head over to the <strong>#general</strong> channel to see the agents' debate and discuss with your group!</>
+                      : <>You still need to complete your accommodation preferences. Head over to the <strong>#accommodation</strong> channel!</>
+                    }
                   </div>
 
                   <motion.div
@@ -153,15 +164,22 @@ export function AttractionSwiper({ onComplete }: { onComplete?: () => void }) {
                   >
                     <Button 
                       className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md relative overflow-hidden"
-                      onClick={() => onComplete?.()}
+                      onClick={() => {
+                        onComplete?.();
+                        if (otherSwiperCompleted) {
+                          onSwitchChannel?.('general');
+                        } else {
+                          onSwitchChannel?.('accommodation');
+                        }
+                      }}
                     >
                       <div className="absolute inset-0 bg-white/20 animate-shimmer" style={{
                         backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)',
                         backgroundSize: '200% 100%',
                       }} />
                       <span className="relative flex items-center gap-2">
-                        <Sparkles className="w-4 h-4" />
-                        Go to #general
+                        <ArrowRight className="w-4 h-4" />
+                        {otherSwiperCompleted ? "Go to General" : "Go to Accommodation"}
                       </span>
                     </Button>
                   </motion.div>

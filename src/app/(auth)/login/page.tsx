@@ -9,7 +9,7 @@ export default function LoginPage() {
       {/* Top Section with Logo */}
       <div className="flex flex-col items-center justify-center pt-20 pb-10">
         <AnimatedLogo className="scale-125 mb-4" />
-        <h1 className="text-xl font-bold text-[#F26C3D] mt-4">GoLah</h1>
+        <img src="/assets/logo.png" alt="GoLah" className="h-12 w-auto mt-4 drop-shadow-md" />
       </div>
 
       {/* Orange Card Section */}
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
           <div className="pt-6">
             <Link 
-              href="/trips" 
+              href="/" 
               className="flex h-14 w-full items-center justify-center rounded-full border-2 border-white text-lg font-bold text-white transition-colors hover:bg-white hover:text-[#F26C3D]"
             >
               Log In
