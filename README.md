@@ -73,11 +73,29 @@ The following ideas were evaluated during ideation, with the selected concepts l
 
 ## 2.2 Ideation Boards
 
-### 🗺️ User Flow
+### 🎨 Moodboard
+
+![GoLah Moodboard](docs/assets/moodboard.jpeg)
+
+The moodboard captures GoLah's visual direction, combining travel inspiration with a friendly, modern, and approachable product experience.
+
+### 🗺️ Trip Planning User Flow
 
 ![User Flow](docs/assets/userflow.png)
 
 This user flow diagram illustrates the step-by-step journey for both solo and group trip planning, including the AI negotiation and approval process.
+
+### 💸 Bill Splitting User Flow
+
+![Bill Splitting User Flow](docs/assets/bill-splitting.png)
+
+This user flow shows how GoLah helps group travellers record shared expenses, calculate each person's share, and settle the bill with AI assistance.
+
+### 📁 Travel File Management User Flow
+
+![Travel File Management User Flow](docs/assets/travel-file-mgmt.png)
+
+This user flow shows how travellers organise and access important documents and travel information in one centralised space.
 
 ### 🧠 Mindmap
 
