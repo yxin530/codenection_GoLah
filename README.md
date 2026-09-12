@@ -29,7 +29,11 @@
 
 # 1. 🚀 Project Overview
 
-**GoLah** is an AI-powered travel companion built as a **Progressive Web App (PWA)** that brings trip planning, travel information, communication, and essential travel tools into one platform. Instead of switching between separate apps for itineraries, maps, documents, currency, and group coordination, travellers can manage their trip from one shared space. GoLah combines **context-aware AI, smart maps, travel files, group chat, voice-message transcription, AI bill splitting, and crisis assistance** to support travellers before and during their trip. Whether travelling solo or with a group, GoLah keeps the trip context in one place so the AI can provide more relevant assistance.
+**The Problem** 
+Travel planning is fragmented across multiple apps, forcing travellers to switch between platforms for itineraries, maps, travel documents, currency, communication, and group coordination. This becomes even more difficult for group travellers, who need to coordinate preferences, plans, and expenses across different tools. The main stakeholders are solo travellers, group travellers, and travel-related service providers. Existing apps such as TripIt help organise travel itineraries, but they mainly focus on itinerary management and do not provide an integrated experience for AI assistance, group coordination, bill splitting, travel files, community discovery, and crisis support.
+
+**Our Solution**
+GoLah is an AI-powered travel companion that brings trip planning, travel information, communication, and essential travel tools into one platform. Instead of switching between multiple apps, travellers can manage their itinerary, travel files, maps, currency, group chat, bill splitting, and travel assistance within a single trip-based platform. Its context-aware multi-agent AI uses relevant trip, group, and conversation information to provide more personalised assistance. GoLah supports both solo and group travellers, helping them plan, coordinate, discover, and handle unexpected travel situations in one place.
 
 ### 🌟 Key Features
 
