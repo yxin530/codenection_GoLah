@@ -82,29 +82,30 @@ export function VoiceMessageBubble({
   }, [isPlaying]);
 
   return (
-    <div className={cn("flex gap-4 w-full group hover:bg-muted/30 p-2 -mx-2 rounded-lg transition-colors")}>
-      <Avatar className={cn("h-10 w-10 shrink-0", isAgent && "bg-orange-100 text-[#F26C3D]")}>
-        {avatarUrl && <AvatarImage src={avatarUrl} alt={senderName} />}
-        <AvatarFallback>
-          {isAgent ? <Bot className="h-6 w-6" /> : (avatarInitials || senderName.slice(0, 2).toUpperCase())}
-        </AvatarFallback>
-      </Avatar>
+    <div className={cn("flex gap-3 w-full group transition-colors p-2 -mx-2", isCurrentUser ? "justify-end" : "justify-start")}>
+      {!isCurrentUser && (
+        <Avatar className={cn("h-8 w-8 shrink-0 mt-auto", isAgent && "bg-orange-100 text-[#F26C3D]")}>
+          {avatarUrl && <AvatarImage src={avatarUrl} alt={senderName} />}
+          <AvatarFallback>
+            {isAgent ? <Bot className="h-5 w-5" /> : (avatarInitials || senderName.slice(0, 2).toUpperCase())}
+          </AvatarFallback>
+        </Avatar>
+      )}
       
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="flex items-baseline gap-2">
+      <div className={cn("flex flex-col max-w-[80%]", isCurrentUser ? "items-end" : "items-start")}>
+        <div className="flex items-baseline gap-2 mb-1 px-1">
           <span className={cn(
-            "font-semibold text-[15px]",
-            isAgent && "text-[#F26C3D]",
-            !isAgent && !isCurrentUser && "text-blue-500"
+            "text-[13px] font-medium",
+            isAgent ? "text-[#F26C3D]" : (isCurrentUser ? "text-foreground" : "text-blue-500")
           )}>
             {senderName}
           </span>
-          <span className="text-xs text-muted-foreground font-medium">
+          <span className="text-[11px] text-muted-foreground/70 font-medium">
             {timestamp}
           </span>
         </div>
         
-        <div className="mt-1 flex flex-col gap-2 max-w-[320px]">
+        <div className="flex flex-col gap-2 w-full max-w-[320px]">
           {isRecording ? (
             <div className="flex items-center gap-2 h-12 bg-muted/30 rounded-2xl px-4 border border-border/50 text-muted-foreground italic text-sm font-medium">
               <Mic className="w-4 h-4 animate-pulse text-red-500" />
@@ -112,14 +113,14 @@ export function VoiceMessageBubble({
             </div>
           ) : (
             <div className={cn(
-              "flex items-center gap-3 p-3 rounded-2xl border shadow-sm",
-              isCurrentUser ? "bg-[#F26C3D]/10 border-[#F26C3D]/20" : "bg-card border-border/50"
+              "flex items-center gap-3 p-3 rounded-2xl shadow-sm",
+              isCurrentUser ? "bg-[#F26C3D] text-white rounded-tr-sm" : "bg-muted text-foreground rounded-tl-sm"
             )}>
               <button 
                 onClick={togglePlay}
                 className={cn(
                   "flex items-center justify-center w-10 h-10 rounded-full shrink-0 transition-colors shadow-sm",
-                  isCurrentUser ? "bg-[#F26C3D] text-white hover:bg-[#d85e33]" : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  isCurrentUser ? "bg-white text-[#F26C3D] hover:bg-white/90" : "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-1" />}
@@ -131,8 +132,8 @@ export function VoiceMessageBubble({
                   <div 
                     key={i} 
                     className={`w-1 rounded-full transition-all duration-300 ${
-                      isCurrentUser ? "bg-foreground/60" : "bg-foreground/40"
-                    } ${isPlaying && (i / 15) * 100 < progress ? (isCurrentUser ? "bg-[#F26C3D]" : "bg-primary") : ""}`}
+                      isCurrentUser ? "bg-white/50" : "bg-foreground/40"
+                    } ${isPlaying && (i / 15) * 100 < progress ? (isCurrentUser ? "bg-white" : "bg-primary") : ""}`}
                     style={{ 
                       height: isPlaying ? `${20 + ((i * 37) % 80)}%` : `${20 + (i % 4) * 20}%` 
                     }}
@@ -140,20 +141,29 @@ export function VoiceMessageBubble({
                 ))}
               </div>
               
-              <div className="text-xs font-medium text-muted-foreground shrink-0 tabular-nums">
+              <div className={cn("text-xs font-medium shrink-0 tabular-nums", isCurrentUser ? "text-white/80" : "text-muted-foreground")}>
                 {duration}
               </div>
             </div>
           )}
 
           {transcription && !isRecording && (
-            <div className="text-sm bg-muted/40 p-3 rounded-xl border border-border/50 text-foreground/90 italic">
+            <div className={cn("text-sm p-3 rounded-xl italic shadow-sm border", isCurrentUser ? "bg-[#F26C3D]/10 border-[#F26C3D]/20 text-foreground" : "bg-muted/40 border-border/50 text-foreground/90")}>
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 not-italic block mb-1">Transcript</span>
               "{transcription}"
             </div>
           )}
         </div>
       </div>
+
+      {isCurrentUser && (
+        <Avatar className="h-8 w-8 shrink-0 mt-auto">
+          {avatarUrl && <AvatarImage src={avatarUrl} alt={senderName} />}
+          <AvatarFallback>
+            {avatarInitials || senderName.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      )}
     </div>
   );
 }

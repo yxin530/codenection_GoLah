@@ -73,7 +73,7 @@ export function AttractionSwiper({
   const [liked, setLiked] = useState<string[]>([]);
   const [disliked, setDisliked] = useState<string[]>([]);
   const [showDetails, setShowDetails] = useState(false);
-  const [exitX, setExitX] = useState(0);
+  const [exitDirection, setExitDirection] = useState<"left" | "right">("right");
 
   const [membersFinished, setMembersFinished] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -109,12 +109,12 @@ export function AttractionSwiper({
     if (direction === "right") {
       const newLiked = [...liked, currentCard.name];
       setLiked(newLiked);
-      setExitX(200);
+      setExitDirection("right");
       localStorage.setItem('tripLikedPlaces', JSON.stringify(newLiked));
     } else {
       const newDisliked = [...disliked, currentCard.name];
       setDisliked(newDisliked);
-      setExitX(-200);
+      setExitDirection("left");
       localStorage.setItem('tripDislikedPlaces', JSON.stringify(newDisliked));
     }
 
@@ -126,9 +126,10 @@ export function AttractionSwiper({
     <div className="w-full flex flex-col items-center my-6">
       <div className="w-full max-w-[320px] aspect-[3/4] relative perspective-1000">
         
-        <AnimatePresence>
+        <AnimatePresence custom={exitDirection}>
           {isFinished ? (
             <motion.div 
+              key="finished-card"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-center p-6 text-center"
@@ -216,6 +217,7 @@ export function AttractionSwiper({
               return (
                 <motion.div
                   key={card.id}
+                  custom={exitDirection}
                   className="absolute inset-0 bg-card rounded-3xl shadow-xl overflow-hidden border border-border flex flex-col"
                   style={{ zIndex: index }}
                   initial={{ 
@@ -228,11 +230,14 @@ export function AttractionSwiper({
                     y: isActive ? 0 : (activeIndex - index) * 10,
                     opacity: 1
                   }}
-                  exit={{ 
-                    x: exitX,
-                    opacity: 0, 
-                    rotate: exitX > 0 ? 15 : -15 
+                  variants={{
+                    exit: (direction: "left" | "right") => ({
+                      x: direction === "right" ? 200 : -200,
+                      opacity: 0,
+                      rotate: direction === "right" ? 15 : -15,
+                    }),
                   }}
+                  exit="exit"
                   drag={isActive ? "x" : false}
                   dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                   onDragEnd={(e, { offset, velocity }) => {
