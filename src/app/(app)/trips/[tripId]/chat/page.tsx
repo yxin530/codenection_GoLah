@@ -9,9 +9,10 @@ import { ChatInfoSheet } from '@/components/chat/ChatInfoSheet';
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { VoiceMessageBubble } from '@/components/chat/VoiceMessageBubble';
 import { AttractionSwiper } from '@/components/chat/AttractionSwiper';
+import { AccommodationSwiper } from '@/components/chat/AccommodationSwiper';
 import { BottomNav } from '@/components/layout/BottomNav';
 
-type Channel = "general" | "planning" | "expenses" | "flights";
+type Channel = "general" | "planning" | "accommodation" | "expenses" | "flights";
 
 export default function ChatHubPage() {
   const [activeChannel, setActiveChannel] = useState<Channel>("general");
@@ -37,6 +38,13 @@ export default function ChatHubPage() {
         className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "planning" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
       >
         <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "planning" ? "text-muted-foreground" : "opacity-70"}`} /> planning
+      </Button>
+      <Button 
+        variant={activeChannel === "accommodation" ? "secondary" : "ghost"} 
+        onClick={() => handleChannelSelect("accommodation")}
+        className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "accommodation" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+      >
+        <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "accommodation" ? "text-muted-foreground" : "opacity-70"}`} /> accommodation
       </Button>
       <Button 
         variant={activeChannel === "expenses" ? "secondary" : "ghost"} 
@@ -90,6 +98,77 @@ export default function ChatHubPage() {
             transcription="Hey guys, I think we should go to Disneyland on Wednesday instead, what do you think?"
             duration="0:08"
           />
+          
+          <div className="border-t border-border my-6 relative">
+            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-xs font-semibold text-muted-foreground">
+              AI Debate & Planning
+            </span>
+          </div>
+
+          <MessageBubble
+            id="plan-start"
+            senderName="GoLah AI"
+            isAgent={true}
+            timestamp="10:20 AM"
+            content="Everyone has finished swiping on Attractions and Accommodations! Based on the group's preferences, my sub-agents have differing opinions. Let's hear them out!"
+          />
+
+          <MessageBubble
+            id="ai-usj"
+            senderName="Universal Studios Agent"
+            avatarInitials="USJ"
+            isAgent={true}
+            timestamp="10:21 AM"
+            content="Since everyone loved Universal Studios and Osaka Castle, let's prioritize USJ for the adrenaline rush. We need a whole day for that!"
+          />
+
+          <MessageBubble
+            id="ai-castle"
+            senderName="Osaka Castle Agent"
+            avatarInitials="OC"
+            isAgent={true}
+            timestamp="10:21 AM"
+            content="But Osaka Castle is so relaxing and historical! We should do that in the morning when it's less crowded and grab matcha nearby."
+          />
+
+          <MessageBubble
+            id="ai-namba"
+            senderName="Nine Hours Namba Agent"
+            avatarInitials="NH"
+            isAgent={true}
+            timestamp="10:22 AM"
+            content="For accommodation, I strongly recommend Nine Hours Namba. Since you guys plan to spend most of your time exploring, it's only $35/night. We can use the extra budget for an amazing Wagyu dinner!"
+          />
+
+          <MessageBubble
+            id="ai-kinoe"
+            senderName="Kyoto Ryokan Kinoe Agent"
+            avatarInitials="KR"
+            isAgent={true}
+            timestamp="10:22 AM"
+            content="I disagree! The whole point of going to Kyoto is the experience. Kyoto Ryokan Kinoe offers an authentic tatami room and a public bath. It's totally worth the splurge!"
+          />
+
+          <MessageBubble
+            id="usr-jy2"
+            senderName="Jing Yi"
+            avatarInitials="JY"
+            isCurrentUser={false}
+            timestamp="10:23 AM"
+            content="I agree with the Ryokan agent, we should definitely splurge on accommodation for at least one night!"
+          />
+
+          <div className="flex gap-4 justify-center mt-6 mb-8">
+            <Button 
+              className="bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md relative overflow-hidden"
+              onClick={() => window.location.href = `/trips/trip-123/itinerary`}
+            >
+              Let us choose
+            </Button>
+            <Button variant="outline" className="shadow-sm">
+              Convince us
+            </Button>
+          </div>
         </>
       );
     }
@@ -104,7 +183,22 @@ export default function ChatHubPage() {
             timestamp="10:20 AM"
             content="I've gathered some top attractions in Kyoto and Osaka based on your interests! Let's play a quick game. Swipe right if you'd like to visit, or swipe left to pass. I'll use your votes to build the perfect itinerary."
           />
-          <AttractionSwiper />
+          <AttractionSwiper onComplete={() => setActiveChannel("general")} />
+        </>
+      );
+    }
+
+    if (activeChannel === "accommodation") {
+      return (
+        <>
+          <MessageBubble
+            id="acc1"
+            senderName="GoLah AI"
+            isAgent={true}
+            timestamp="10:25 AM"
+            content="I've analyzed the best areas to stay in Osaka and Kyoto based on your itinerary. Here are some highly recommended hotels and ryokans! Swipe right to shortlist, or swipe left to pass."
+          />
+          <AccommodationSwiper onComplete={() => setActiveChannel("general")} />
         </>
       );
     }
@@ -190,9 +284,13 @@ export default function ChatHubPage() {
         <div className="flex items-center justify-between p-4 border-b border-border shadow-sm z-10 sticky top-0 bg-background/95 backdrop-blur">
           <div className="flex items-center gap-2">
             <Sheet open={isMobileSheetOpen} onOpenChange={setIsMobileSheetOpen}>
-              <SheetTrigger render={<Button variant="ghost" size="icon" className="sm:hidden -ml-2 h-8 w-8 text-muted-foreground" />}>
-                <Menu className="w-5 h-5" />
-              </SheetTrigger>
+              <SheetTrigger 
+                render={
+                  <Button variant="ghost" size="icon" className="sm:hidden -ml-2 h-8 w-8 text-muted-foreground">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                }
+              />
               <SheetContent side="left" className="w-64 p-0">
                 <SheetHeader className="p-4 border-b border-border/50 text-left">
                   <SheetTitle className="uppercase text-muted-foreground tracking-wider text-sm">Channels</SheetTitle>

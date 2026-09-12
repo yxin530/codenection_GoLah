@@ -36,7 +36,7 @@ export function BottomNav() {
         isVisible ? "bottom-4 sm:bottom-6 translate-y-0 opacity-100" : "-bottom-24 translate-y-full opacity-0"
       )}
     >
-      <Link href="/map" className="rounded-full p-3 text-[#ff8b69] transition hover:bg-white/30" aria-label="Explore">
+      <Link href="/trips/temp-trip-id/map" className="rounded-full p-3 text-[#ff8b69] transition hover:bg-white/30" aria-label="Explore">
         <MapPin className="size-7" />
       </Link>
       <Link href="/" className="rounded-full bg-white/25 p-3 text-[#ff6b3d] transition hover:bg-white/40" aria-label="Home">

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Info, X, Heart, ExternalLink, Users, Loader2 } from "lucide-react";
+import { MapPin, Info, X, Heart, ExternalLink, Users, Loader2, CheckCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const MOCK_ATTRACTIONS = [
   {
@@ -57,15 +58,35 @@ const MOCK_ATTRACTIONS = [
   }
 ];
 
-export function AttractionSwiper() {
+export function AttractionSwiper({ onComplete }: { onComplete?: () => void }) {
   const [cards, setCards] = useState(MOCK_ATTRACTIONS);
   const [liked, setLiked] = useState<string[]>([]);
   const [disliked, setDisliked] = useState<string[]>([]);
   const [showDetails, setShowDetails] = useState(false);
   const [exitX, setExitX] = useState(0);
 
+  const [allMembersFinished, setAllMembersFinished] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const router = useRouter();
+
   const activeIndex = cards.length - 1;
   const isFinished = cards.length === 0;
+
+  useEffect(() => {
+    if (isFinished && !allMembersFinished) {
+      const timer = setTimeout(() => {
+        setAllMembersFinished(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFinished, allMembersFinished]);
+
+  const handleGenerateReport = () => {
+    setIsGenerating(true);
+    setTimeout(() => {
+        router.push('/trips/temp-trip-id/itinerary');
+    }, 2000);
+  };
 
   const handleSwipe = (direction: "left" | "right") => {
     if (isFinished) return;
@@ -73,11 +94,15 @@ export function AttractionSwiper() {
     const currentCard = cards[activeIndex];
     
     if (direction === "right") {
-      setLiked([...liked, currentCard.name]);
+      const newLiked = [...liked, currentCard.name];
+      setLiked(newLiked);
       setExitX(200);
+      localStorage.setItem('tripLikedPlaces', JSON.stringify(newLiked));
     } else {
-      setDisliked([...disliked, currentCard.name]);
+      const newDisliked = [...disliked, currentCard.name];
+      setDisliked(newDisliked);
       setExitX(-200);
+      localStorage.setItem('tripDislikedPlaces', JSON.stringify(newDisliked));
     }
 
     setCards((prev) => prev.slice(0, -1));
@@ -95,20 +120,70 @@ export function AttractionSwiper() {
               animate={{ opacity: 1, scale: 1 }}
               className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-center p-6 text-center"
             >
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-blue-600">
-                <Users className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">You're all done!</h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                Waiting for group members (Jing Yi, Xuan Yu) to finish swiping so I can generate the group itinerary report...
-              </p>
-              
-              <div className="w-full bg-muted rounded-full h-2 mb-2 overflow-hidden">
-                <div className="bg-blue-500 w-1/3 h-full rounded-full animate-pulse" />
-              </div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-                <Loader2 className="w-3 h-3 animate-spin" /> 1 of 3 members finished
-              </p>
+              {isGenerating ? (
+                <>
+                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-[#F26C3D]">
+                    <Sparkles className="w-8 h-8 animate-pulse" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Generating...</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Our AI is crafting the perfect itinerary based on everyone's preferences...
+                  </p>
+                  <Loader2 className="w-8 h-8 animate-spin text-[#F26C3D]" />
+                </>
+              ) : allMembersFinished ? (
+                <div className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-start p-4 text-center overflow-y-auto scrollbar-none">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2 text-green-600 shrink-0 mt-6">
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Everyone's Ready!</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    All group members have finished swiping. The AI agents are now discussing the best plan for you.
+                  </p>
+                  
+                  <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-6">
+                    Head over to the <strong>#general</strong> channel to see the agents' debate and discuss with your group!
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="w-full mt-auto mb-2"
+                  >
+                    <Button 
+                      className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white shadow-md relative overflow-hidden"
+                      onClick={() => onComplete?.()}
+                    >
+                      <div className="absolute inset-0 bg-white/20 animate-shimmer" style={{
+                        backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)',
+                        backgroundSize: '200% 100%',
+                      }} />
+                      <span className="relative flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        Go to #general
+                      </span>
+                    </Button>
+                  </motion.div>
+                </div>
+              ) : (
+                <>
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-blue-600">
+                    <Users className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">You're all done!</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Waiting for group members (Jing Yi, Xuan Yu) to finish swiping so I can generate the group itinerary report...
+                  </p>
+                  
+                  <div className="w-full bg-muted rounded-full h-2 mb-2 overflow-hidden">
+                    <div className="bg-blue-500 w-1/3 h-full rounded-full animate-pulse" />
+                  </div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Loader2 className="w-3 h-3 animate-spin" /> 1 of 3 members finished
+                  </p>
+                </>
+              )}
             </motion.div>
           ) : (
             cards.map((card, index) => {

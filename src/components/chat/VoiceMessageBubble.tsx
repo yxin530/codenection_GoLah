@@ -62,7 +62,7 @@ export function VoiceMessageBubble({
                       isCurrentUser ? "bg-white/70" : "bg-foreground/40"
                     }`}
                     style={{ 
-                      height: isPlaying ? `${Math.max(20, Math.random() * 100)}%` : `${20 + (i % 4) * 20}%` 
+                      height: isPlaying ? `${20 + ((i * 37) % 80)}%` : `${20 + (i % 4) * 20}%` 
                     }}
                   />
                 ))}
