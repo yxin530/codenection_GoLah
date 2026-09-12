@@ -75,7 +75,7 @@ export function AttractionSwiper({
   const [showDetails, setShowDetails] = useState(false);
   const [exitX, setExitX] = useState(0);
 
-  const [allMembersFinished, setAllMembersFinished] = useState(false);
+  const [membersFinished, setMembersFinished] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const router = useRouter();
 
@@ -83,13 +83,16 @@ export function AttractionSwiper({
   const isFinished = cards.length === 0;
 
   useEffect(() => {
-    if (isFinished && !allMembersFinished) {
-      const timer = setTimeout(() => {
-        setAllMembersFinished(true);
+    if (isFinished && membersFinished < 3) {
+      const timer1 = setTimeout(() => {
+        setMembersFinished(2);
+      }, 1500);
+      const timer2 = setTimeout(() => {
+        setMembersFinished(3);
       }, 3000);
-      return () => clearTimeout(timer);
+      return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }
-  }, [isFinished, allMembersFinished]);
+  }, [isFinished, membersFinished]);
 
   const handleGenerateReport = () => {
     setIsGenerating(true);
@@ -141,7 +144,7 @@ export function AttractionSwiper({
                   </p>
                   <Loader2 className="w-8 h-8 animate-spin text-[#F26C3D]" />
                 </>
-              ) : allMembersFinished || isSolo ? (
+              ) : membersFinished === 3 || isSolo ? (
                 <div className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-start p-4 text-center overflow-y-auto scrollbar-none">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2 text-green-600 shrink-0 mt-6">
                     <CheckCircle className="w-6 h-6" />
@@ -199,10 +202,10 @@ export function AttractionSwiper({
                   </p>
                   
                   <div className="w-full bg-muted rounded-full h-2 mb-2 overflow-hidden">
-                    <div className="bg-blue-500 w-1/3 h-full rounded-full animate-pulse" />
+                    <div className={`bg-blue-500 h-full rounded-full animate-pulse transition-all duration-500 ${membersFinished === 1 ? 'w-1/3' : 'w-2/3'}`} />
                   </div>
                   <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-                    <Loader2 className="w-3 h-3 animate-spin" /> 1 of 3 members finished
+                    <Loader2 className="w-3 h-3 animate-spin" /> {membersFinished} of 3 members finished
                   </p>
                 </>
               )}

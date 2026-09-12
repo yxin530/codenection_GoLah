@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Info, X, Heart, ExternalLink, BedDouble } from "lucide-react";
+import { MapPin, Info, X, Heart, ExternalLink, BedDouble, Users, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const MOCK_ACCOMMODATIONS = [
@@ -69,9 +69,18 @@ export function AccommodationSwiper({
   const [disliked, setDisliked] = useState<string[]>([]);
   const [showDetails, setShowDetails] = useState(false);
   const [exitX, setExitX] = useState(0);
+  const [membersFinished, setMembersFinished] = useState(1);
 
   const activeIndex = cards.length - 1;
   const isFinished = cards.length === 0;
+
+  useEffect(() => {
+    if (isFinished && membersFinished < 3) {
+      const timer1 = setTimeout(() => setMembersFinished(2), 1500);
+      const timer2 = setTimeout(() => setMembersFinished(3), 3000);
+      return () => { clearTimeout(timer1); clearTimeout(timer2); };
+    }
+  }, [isFinished, membersFinished]);
 
   const handleSwipe = (direction: "left" | "right") => {
     if (isFinished) return;
@@ -101,34 +110,55 @@ export function AccommodationSwiper({
               animate={{ opacity: 1, scale: 1 }}
               className="absolute inset-0 bg-card rounded-3xl border border-border shadow-md flex flex-col items-center justify-start p-4 text-center overflow-y-auto scrollbar-none"
             >
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2 text-blue-600 shrink-0 mt-6">
-                <BedDouble className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">You're all set!</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                You've reviewed all hotel recommendations.
-              </p>
-              
-              <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-4">
-                {otherSwiperCompleted 
-                  ? `Your accommodation preferences have been saved. Head over to #general to see ${isSolo ? 'my recommendations' : 'the debate'}!`
-                  : "Your accommodation preferences have been saved. You still need to complete your planning preferences in #planning."
-                }
-              </div>
-              
-              <Button 
-                className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white rounded-xl py-6 font-semibold"
-                onClick={() => {
-                  onComplete?.();
-                  if (otherSwiperCompleted) {
-                    onSwitchChannel?.('general');
-                  } else {
-                    onSwitchChannel?.('planning');
-                  }
-                }}
-              >
-                {otherSwiperCompleted ? "Go to General" : "Go to Planning"}
-              </Button>
+              {membersFinished === 3 || isSolo ? (
+                <>
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2 text-blue-600 shrink-0 mt-6">
+                    <BedDouble className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">You're all set!</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    You've reviewed all hotel recommendations.
+                  </p>
+                  
+                  <div className="bg-muted/50 p-3 rounded-lg border border-border w-full text-sm mb-4">
+                    {otherSwiperCompleted 
+                      ? `Your accommodation preferences have been saved. Head over to #general to see ${isSolo ? 'my recommendations' : 'the debate'}!`
+                      : "Your accommodation preferences have been saved. You still need to complete your planning preferences in #planning."
+                    }
+                  </div>
+                  
+                  <Button 
+                    className="w-full bg-[#F26C3D] hover:bg-[#d85e33] text-white rounded-xl py-6 font-semibold mt-auto mb-2"
+                    onClick={() => {
+                      onComplete?.();
+                      if (otherSwiperCompleted) {
+                        onSwitchChannel?.('general');
+                      } else {
+                        onSwitchChannel?.('planning');
+                      }
+                    }}
+                  >
+                    {otherSwiperCompleted ? "Go to General" : "Go to Planning"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-blue-600 mt-6">
+                    <Users className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">You're all done!</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Waiting for group members (Jing Yi, Xuan Yu) to finish swiping so I can generate the group itinerary report...
+                  </p>
+                  
+                  <div className="w-full bg-muted rounded-full h-2 mb-2 overflow-hidden">
+                    <div className={`bg-blue-500 h-full rounded-full animate-pulse transition-all duration-500 ${membersFinished === 1 ? 'w-1/3' : 'w-2/3'}`} />
+                  </div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Loader2 className="w-3 h-3 animate-spin" /> {membersFinished} of 3 members finished
+                  </p>
+                </>
+              )}
             </motion.div>
           ) : (
             cards.map((card, index) => {
