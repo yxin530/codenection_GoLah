@@ -73,6 +73,12 @@ The following ideas were evaluated during ideation, with the selected concepts l
 
 ## 2.2 Ideation Boards
 
+### 🗺️ User Flow
+
+![User Flow](docs/assets/userflow.png)
+
+This user flow diagram illustrates the step-by-step journey for both solo and group trip planning, including the AI negotiation and approval process.
+
 ### 🧠 Mindmap
 
 ![Mindmap](docs/assets/GoLah-mindmap.png)
