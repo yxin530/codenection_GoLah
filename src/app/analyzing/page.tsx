@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function AnalyzingPage() {
+function AnalyzingContent() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -39,5 +39,13 @@ export default function AnalyzingPage() {
         Our AI is crunching the numbers and looking for the best destinations, dates, and budget matches for your trip.
       </p>
     </div>
+  );
+}
+
+export default function AnalyzingPage() {
+  return (
+    <Suspense fallback={<div className="flex h-screen w-full bg-white" />}>
+      <AnalyzingContent />
+    </Suspense>
   );
 }
