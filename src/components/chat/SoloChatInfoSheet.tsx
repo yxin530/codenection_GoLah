@@ -34,9 +34,9 @@ export function SoloChatInfoSheet() {
 
         <div className="p-6 pt-4 flex-1">
           <SheetHeader className="text-left">
-            <SheetTitle className="text-2xl font-bold">Group Chat Info</SheetTitle>
+            <SheetTitle className="text-2xl font-bold">Chat Info</SheetTitle>
             <SheetDescription>
-              Manage trip members and group preferences.
+              Manage your trip preferences.
             </SheetDescription>
           </SheetHeader>
           
@@ -61,11 +61,11 @@ export function SoloChatInfoSheet() {
               </div>
             </div>
 
-            {/* Group Preferences Section */}
+            {/* Traveler Preferences Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold flex items-center gap-2 text-foreground/80 uppercase tracking-wide">
-                  <Settings className="w-4 h-4" /> Group Preferences
+                  <Settings className="w-4 h-4" /> Traveler Preferences
                 </h3>
                 <Button variant="ghost" size="sm" className="h-8 text-xs text-[#F26C3D] hover:text-[#d85e33] hover:bg-orange-50">
                   Edit

@@ -4,16 +4,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass } from 'lucide-react';
+import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass, QrCode } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { SoloChatInfoSheet } from '@/components/chat/SoloChatInfoSheet';
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { VoiceMessageBubble } from '@/components/chat/VoiceMessageBubble';
 import { AttractionSwiper } from '@/components/chat/AttractionSwiper';
 import { AccommodationSwiper } from '@/components/chat/AccommodationSwiper';
+import { BoardingPass } from '@/components/chat/BoardingPass';
 import { BottomNav } from '@/components/layout/BottomNav';
 
-type Channel = "general" | "planning" | "accommodation" | "expenses" | "flights";
+type Channel = "general" | "planning" | "accommodation" | "expenses" | "manage";
 
 let globalInitialStep = 0;
 let globalDebateStep = -1;
@@ -51,6 +52,9 @@ export default function ChatHubPage() {
   const [topPlaces, setTopPlaces] = useState<string[]>(['Universal Studios Japan', 'Osaka Castle']);
   const [topAccs, setTopAccs] = useState<string[]>(['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
   const [skipDebate, setSkipDebate] = useState(false);
+  const [selectedManageFlight, setSelectedManageFlight] = useState('Malaysia Airlines');
+  const [bookingComplete, setBookingComplete] = useState(false);
+  const [activePass, setActivePass] = useState<string | null>(null);
 
   useEffect(() => {
     if (swipingCompleted) {
@@ -130,11 +134,11 @@ export default function ChatHubPage() {
         <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "expenses" ? "text-muted-foreground" : "opacity-70"}`} /> expenses
       </Button>
       <Button 
-        variant={activeChannel === "flights" ? "secondary" : "ghost"} 
-        onClick={() => handleChannelSelect("flights")}
-        className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "flights" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+        variant={activeChannel === "manage" ? "secondary" : "ghost"} 
+        onClick={() => handleChannelSelect("manage")}
+        className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "manage" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
       >
-        <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "flights" ? "text-muted-foreground" : "opacity-70"}`} /> flights
+        <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "manage" ? "text-muted-foreground" : "opacity-70"}`} /> manage
       </Button>
     </>
   );
@@ -154,7 +158,7 @@ export default function ChatHubPage() {
           />
           {initialMessageStep >= 1 && <MessageBubble
             id="msg2"
-            senderName="Yixin"
+            senderName="Yun Xin"
             avatarInitials="YX"
             isCurrentUser={true}
             timestamp="10:05 AM"
@@ -408,39 +412,73 @@ export default function ChatHubPage() {
       );
     }
 
-    if (activeChannel === "flights") {
+    if (activeChannel === "manage") {
       return (
         <>
           <MessageBubble
-            id="flt1"
+            id="manage1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:45 AM"
-            content="I found some great flight options from KUL to KIX for your dates. The cheapest option is AirAsia X."
+            content="Your trip wallet is ready. Choose a flight first, then open any booking to view its QR pass."
           />
-          <div className="bg-card border border-border rounded-xl p-4 shadow-sm w-full max-w-sm ml-12">
-            <div className="flex justify-between items-center mb-4">
-              <span className="font-bold text-lg">KUL ✈️ KIX</span>
-              <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">Best Value</span>
-            </div>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <div>
-                  <p className="font-semibold text-lg">08:00</p>
-                  <p className="text-muted-foreground text-xs">KUL (T2)</p>
-                </div>
-                <div className="flex flex-col items-center justify-center flex-1 px-4 text-xs text-muted-foreground">
-                  <span className="border-b border-dashed w-full text-center pb-1 mb-1">6h 30m</span>
-                  <span>Direct</span>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-lg">15:30</p>
-                  <p className="text-muted-foreground text-xs">KIX (T1)</p>
-                </div>
+          {!bookingComplete && (
+            <div className="bg-card border border-border rounded-xl p-4 shadow-sm w-full max-w-sm ml-12">
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-bold text-lg">KUL ✈️ KIX</span>
+                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">Best Value</span>
               </div>
-              <Button className="w-full mt-2 bg-[#ff6b3d] hover:bg-[#f45d30] text-white">Select Flight - $450</Button>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold text-lg">08:00</p>
+                    <p className="text-muted-foreground text-xs">KUL (T2)</p>
+                  </div>
+                  <div className="flex flex-col items-center justify-center flex-1 px-4 text-xs text-muted-foreground">
+                    <span className="border-b border-dashed w-full text-center pb-1 mb-1">6h 30m</span>
+                    <span>Direct</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-lg">15:30</p>
+                    <p className="text-muted-foreground text-xs">KIX (T1)</p>
+                  </div>
+                </div>
+                <p className="mt-3 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your airline</p>{['Malaysia Airlines · RM 1,289', 'AirAsia X · RM 899'].map(option => <Button key={option} variant={selectedManageFlight === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageFlight(option.split(' · ')[0])} className="mb-2 w-full justify-between"><span>{option}</span>{selectedManageFlight === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}<Button onClick={() => { localStorage.setItem('golahBookingComplete', 'true'); setBookingComplete(true); }} className="mt-2 w-full bg-[#ff6b3d] text-white hover:bg-[#f45d30]">Confirm booking</Button>
+              </div>
             </div>
-          </div>
+          )}
+          {bookingComplete && (
+            <div className="ml-12 mt-4 max-w-lg">
+              <div className="rounded-2xl border border-green-200 bg-green-50/60 p-4 mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Check className="w-4 h-4 text-green-700" />
+                  <p className="text-sm font-bold text-green-700">Booking confirmed!</p>
+                </div>
+                <p className="text-xs text-green-600">Your flight and passes are ready.</p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {['Flight boarding pass', 'Hotel reservation pass', 'Attraction QR pass', 'Trip support pass'].map(label => (
+                  <button key={label} onClick={() => setActivePass(label)} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left text-sm font-semibold hover:border-[#ff6b3d]">
+                    <QrCode className="h-5 w-5 text-[#ff6b3d]" />{label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {activePass === 'Flight boarding pass' && (
+            <BoardingPass airline={selectedManageFlight} onClose={() => setActivePass(null)} />
+          )}
+          {activePass && activePass !== 'Flight boarding pass' && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5">
+              <div className="w-full max-w-sm rounded-2xl bg-background p-6 text-center shadow-xl">
+                <button onClick={() => setActivePass(null)} className="float-right text-muted-foreground">×</button>
+                <QrCode className="mx-auto mt-3 h-44 w-44" />
+                <h3 className="mt-4 text-lg font-bold">{activePass}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">Mocked pass · Yun Xin · Kyoto trip · 12–17 Oct 2025</p>
+                <Button onClick={() => setActivePass(null)} className="mt-5 w-full bg-[#ff6b3d] text-white">Close pass</Button>
+              </div>
+            </div>
+          )}
         </>
       );
     }
@@ -485,6 +523,7 @@ export default function ChatHubPage() {
             <span className="font-bold text-base">{activeChannel}</span>
           </div>
           <SoloChatInfoSheet />
+          <div className="absolute inset-x-0 top-full z-10 flex gap-1 border-b border-border bg-background px-4 py-2"><span className="text-[10px] font-bold text-[#ff6b3d]">Discussion</span><div className="mt-1 h-1 flex-1 rounded-full bg-[#ff6b3d]" /><span className="text-[10px] font-bold text-[#899397]">Finalizing</span><div className="mt-1 h-1 flex-1 rounded-full bg-[#ff6b3d]" /><span className="text-[10px] font-bold text-[#899397]">Booking</span><div className={`mt-1 h-1 flex-1 rounded-full ${activeChannel === "manage" ? "bg-[#ff6b3d]" : "bg-[#ebe6e1]"}`} /><span className={`text-[10px] font-bold ${activeChannel === "manage" ? "text-[#ff6b3d]" : "text-[#899397]"}`}>Manage</span></div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">

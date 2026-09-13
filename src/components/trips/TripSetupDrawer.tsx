@@ -1,213 +1,54 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import { CalendarIcon, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Check, ChevronDown, CircleHelp, CreditCard, Hotel, Plane, QrCode, Send, Sparkles, X } from "lucide-react";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+type Stage = "discussion" | "finalizing" | "booking" | "manage";
+const questions = [
+  ["When would you like to go?", ["12–17 Oct", "2–7 Nov", "Flexible", "I’ll decide later"]],
+  ["Where would you love to explore?", ["Kyoto", "Tokyo", "Osaka", "Surprise me"]],
+  ["What kind of trip feels right?", ["Culture + history", "Food adventure", "Nature + slow mornings", "A little bit of everything"]],
+  ["What is one must-go attraction?", ["Fushimi Inari Shrine", "Arashiyama Bamboo Grove", "Universal Studios Japan", "I’m open to ideas"]],
+  ["How would you describe your pace?", ["Relaxed", "Balanced", "Packed itinerary", "Spontaneous"]],
+  ["Any dietary restrictions?", ["No restrictions", "Halal", "Vegetarian", "Allergies — I’ll tell you"]],
+  ["How should I prioritise flights?", ["Direct first", "Lowest price first", "Best departure time", "Show me all"]],
+  ["What cabin would you prefer?", ["Economy", "Premium economy", "Business", "No preference"]],
+  ["What accommodation sounds best?", ["Boutique hotel", "Ryokan", "Apartment stay", "Find the best value"]],
+  ["Where should we stay?", ["Near the action", "Quiet neighbourhood", "Near the station", "You choose"]],
+  ["What is your accommodation budget?", ["Under RM 1,500", "RM 1,500–2,500", "RM 2,500–4,000", "Flexible"]],
+  ["Would you like airport transfer included?", ["Yes, include it", "No, I’ll arrange it", "Compare options", "Not sure"]],
+  ["How much luggage will you bring?", ["Carry-on only", "20 kg checked", "More than 20 kg", "Not sure yet"]],
+  ["Should I include travel insurance?", ["Add standard cover", "Show me options", "No thanks", "I’ll decide later"]],
+  ["Anything else I should know?", ["Keep it flexible", "Surprise me", "I’ll add a note", "Nothing else"]],
+] as const;
+interface Props { isOpen: boolean; onClose: () => void; tripType: "Solo Travel" | "Group Travel" | null; }
 
-interface TripSetupDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  tripType: "Solo Travel" | "Group Travel" | null;
+export function TripSetupDrawer({ isOpen, onClose, tripType }: Props) {
+  const router = useRouter(); const [stage, setStage] = useState<Stage>("discussion"); const [question, setQuestion] = useState(0); const [answers, setAnswers] = useState<Record<number, string[]>>({}); const [message, setMessage] = useState(""); const [selectedFlight, setSelectedFlight] = useState("Malaysia Airlines"); const [selectedHotel, setSelectedHotel] = useState("The Celestine Kyoto Gion"); const [qrTitle, setQrTitle] = useState<string | null>(null);
+  if (!isOpen || !tripType) return null;
+  const close = () => { setStage("discussion"); setQuestion(0); setAnswers({}); onClose(); }; const answer = answers[question] || []; const progress = Object.keys(answers).length;
+  const choose = (value: string) => setAnswers(prev => { const current = prev[question] || []; return { ...prev, [question]: current.includes(value) ? current.filter(item => item !== value) : [...current, value] }; });
+  const nextQuestion = () => { if (answer.length && question < questions.length - 1) setQuestion(v => v + 1); };
+  const startChat = () => router.push(`/analyzing?type=${tripType === "Solo Travel" ? "solo" : "group"}&t=${Date.now()}`);
+  const openItinerary = () => router.push(`/trips/${tripType === "Solo Travel" ? "solo-trip" : "group-trip"}/itinerary`);
+  const stages: Stage[] = ["discussion", "finalizing", "booking", "manage"]; const stageIndex = stages.indexOf(stage);
+  return <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#132432]/55 p-0 backdrop-blur-sm sm:items-center sm:p-6"><section className="flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[30px] bg-[#fffdfa] shadow-2xl sm:rounded-[30px]">
+    <header className="border-b border-[#eadfd7] px-5 pb-4 pt-5 sm:px-8"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-2xl bg-[#ff6b3d] text-white"><Sparkles className="size-5" /></div><div><p className="text-xs font-bold uppercase tracking-[.18em] text-[#ff6b3d]">GoLah copilot</p><h2 className="text-lg font-extrabold text-[#24323a]">{tripType.replace(" Travel", "")} trip, made simple</h2></div></div><button onClick={close}><X className="size-5 text-[#718088]" /></button></div><div className="mt-6 grid grid-cols-4 gap-2">{stages.map((item, i) => <button key={item} onClick={() => (i === 0 || (i < 2 && progress === 15) || i <= stageIndex) && setStage(item)} className="text-left"><div className={`mb-2 h-1.5 rounded-full ${i <= stageIndex ? "bg-[#ff6b3d]" : "bg-[#ebe6e1]"}`} /><span className={`text-[11px] font-bold capitalize ${i === stageIndex ? "text-[#ff6b3d]" : "text-[#899397]"}`}>{i + 1}. {item}</span></button>)}</div></header>
+    <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-6">
+      {stage === "discussion" && <Discussion question={question} progress={progress} answer={answer} choose={choose} nextQuestion={nextQuestion} onFinalize={() => { localStorage.setItem("golahTripAnswers", JSON.stringify(answers)); localStorage.setItem("golahTripBudget", answers[10]?.[0] || "Flexible"); setStage("finalizing"); }} message={message} setMessage={setMessage} />}
+      {stage === "finalizing" && <Finalizing answers={answers} onConfirm={startChat} onBack={() => setStage("discussion")} />}
+      {stage === "booking" && <Booking selectedFlight={selectedFlight} setSelectedFlight={setSelectedFlight} selectedHotel={selectedHotel} setSelectedHotel={setSelectedHotel} onPay={() => setStage("manage")} />}
+      {stage === "manage" && <Manage onOpenQr={setQrTitle} />}
+    </div>
+    <footer className="border-t border-[#eadfd7] bg-white px-5 py-4 sm:px-8">{stage === "discussion" && <div className="flex gap-2"><input value={message} onChange={e => setMessage(e.target.value)} placeholder="Tell me anything about your trip…" className="min-w-0 flex-1 rounded-xl border border-[#eadfd7] px-4 text-sm outline-none focus:border-[#ff6b3d]" /><button className="flex size-11 items-center justify-center rounded-xl bg-[#ff6b3d] text-white"><Send className="size-4" /></button></div>}{stage === "finalizing" && <div className="flex gap-2"><button onClick={() => setStage("discussion")} className="flex items-center gap-2 rounded-xl border border-[#eadfd7] px-4 py-3 text-sm font-extrabold text-[#39464d]"><ArrowLeft className="size-4" /> Back to chat</button><button onClick={startChat} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#ff6b3d] px-4 py-3 text-sm font-extrabold text-white">Confirm plan <ArrowRight className="size-4" /></button></div>}{stage === "booking" && <button onClick={() => setStage("manage")} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ff6b3d] px-4 py-3 text-sm font-extrabold text-white">Pay RM 4,486 securely <ArrowRight className="size-4" /></button>}{stage === "manage" && <button onClick={openItinerary} className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#eadfd7] px-4 py-3 text-sm font-extrabold text-[#39464d]">Open full trip itinerary <ArrowRight className="size-4" /></button>}</footer>
+    {qrTitle && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#132432]/45 p-5"><div className="w-full max-w-sm rounded-3xl bg-white p-6 text-center shadow-2xl"><button onClick={() => setQrTitle(null)} className="float-right"><X className="size-5 text-[#718088]" /></button><QrCode className="mx-auto mt-3 size-44 text-[#29363d]" /><h3 className="mt-4 text-lg font-extrabold text-[#29363d]">{qrTitle}</h3><p className="mt-1 text-sm text-[#718088]">Mock QR pass · Ready to scan</p><button onClick={() => setQrTitle(null)} className="mt-5 w-full rounded-xl bg-[#ff6b3d] py-3 text-sm font-extrabold text-white">Done</button></div></div>}
+  </section></div>;
 }
 
-export function TripSetupDrawer({ isOpen, onClose, tripType }: TripSetupDrawerProps) {
-  const router = useRouter();
-  const [destinations, setDestinations] = useState<string[]>([]);
-  const [destInput, setDestInput] = useState("");
-  
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
-  
-  const [minBudget, setMinBudget] = useState("");
-  const [maxBudget, setMaxBudget] = useState("");
-  
-  const [preferences, setPreferences] = useState("");
-  const [remarks, setRemarks] = useState("");
-
-  const handleDestKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      const val = destInput.trim();
-      if (val && !destinations.includes(val)) {
-        setDestinations([...destinations, val]);
-        setDestInput("");
-      }
-    }
-  };
-
-  const removeDest = (dest: string) => {
-    setDestinations(destinations.filter(d => d !== dest));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const typeParam = tripType === "Solo Travel" ? "solo" : "group";
-    router.push(`/analyzing?type=${typeParam}&t=${Date.now()}`);
-    onClose();
-  };
-
-  if (!tripType) return null;
-
-  return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="max-h-[90vh]">
-        <div className="mx-auto w-full max-w-md overflow-y-auto">
-          <DrawerHeader>
-            <DrawerTitle className="text-2xl font-bold">{tripType}</DrawerTitle>
-            <DrawerDescription>Let's set you up</DrawerDescription>
-          </DrawerHeader>
-
-          <form onSubmit={handleSubmit} className="p-4 pb-0 space-y-6">
-            {/* Destinations */}
-            <div className="space-y-2">
-              <Label htmlFor="destinations">Destinations</Label>
-              <Input
-                id="destinations"
-                placeholder="Type a country and press Enter (e.g. unknown, not sure)"
-                value={destInput}
-                onChange={(e) => setDestInput(e.target.value)}
-                onKeyDown={handleDestKeyDown}
-              />
-              {destinations.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {destinations.map(dest => (
-                    <Badge key={dest} variant="secondary" className="flex items-center gap-1">
-                      {dest}
-                      <X
-                        className="h-3 w-3 cursor-pointer hover:text-destructive"
-                        onClick={() => removeDest(dest)}
-                      />
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Dates */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Start Date</Label>
-                <Popover>
-                  <PopoverTrigger render={<Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !startDate && "text-muted-foreground"
-                      )}
-                    />}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={startDate}
-                      onSelect={setStartDate}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              <div className="space-y-2">
-                <Label>End Date</Label>
-                <Popover>
-                  <PopoverTrigger render={<Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !endDate && "text-muted-foreground"
-                      )}
-                    />}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={endDate}
-                      onSelect={setEndDate}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-
-            {/* Budget */}
-            <div className="space-y-2">
-              <Label>Budget (RM)</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="number"
-                  placeholder="Min"
-                  value={minBudget}
-                  onChange={(e) => setMinBudget(e.target.value)}
-                />
-                <span className="text-sm text-muted-foreground">to</span>
-                <Input
-                  type="number"
-                  placeholder="Max"
-                  value={maxBudget}
-                  onChange={(e) => setMaxBudget(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Preferences */}
-            <div className="space-y-2">
-              <Label htmlFor="preferences">Preferences &amp; Interests</Label>
-              <Textarea
-                id="preferences"
-                placeholder="What do you like to do? (e.g. Hiking, Museums, Food)"
-                value={preferences}
-                onChange={(e) => setPreferences(e.target.value)}
-              />
-            </div>
-
-            {/* Remarks */}
-            <div className="space-y-2">
-              <Label htmlFor="remarks">Remarks</Label>
-              <Textarea
-                id="remarks"
-                placeholder="Any special requests or constraints?"
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-              />
-            </div>
-
-            <DrawerFooter className="px-0">
-              <Button type="submit" className="w-full bg-[#ff6b3d] hover:bg-[#f45d30] text-white">
-                Submit Plan
-              </Button>
-              <DrawerClose render={<Button variant="outline" />}>
-                Cancel
-              </DrawerClose>
-            </DrawerFooter>
-          </form>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
-}
+function Discussion({ question, progress, answer, choose, nextQuestion, onFinalize, message, setMessage }: { question: number; progress: number; answer: string[]; choose: (v: string) => void; nextQuestion: () => void; onFinalize: () => void; message: string; setMessage: (v: string) => void }) { const [show, setShow] = useState(false); useEffect(() => { setShow(false); const timer = setTimeout(() => setShow(true), 420); return () => clearTimeout(timer); }, [question]); const q = questions[question]; return <><div className="mb-5 flex items-start gap-3"><div className="mt-1 flex size-8 shrink-0 items-center justify-center rounded-full bg-[#dff3ff] text-[#187ea4]"><Bot className="size-4" /></div><div className="max-w-[90%] rounded-2xl rounded-tl-sm bg-[#f4f1ed] px-4 py-3 text-sm leading-relaxed text-[#39464d]">{show ? <><p className="animate-in fade-in slide-in-from-bottom-2 duration-500">Lovely, we’re getting a clearer picture of your trip 😊 You can choose as many as feel right.</p><p className="mt-2 font-bold text-[#ff6b3d]">{q[0]}</p></> : <Typing />}</div></div><div className="ml-11"><div className="mb-3 flex items-center justify-between"><p className="text-xs font-extrabold text-[#29363d]">Question {question + 1} of 15</p><span className="rounded-full bg-[#fff2ed] px-3 py-1 text-xs font-extrabold text-[#ff6b3d]">{progress}/15 answered</span></div><div className="grid grid-cols-2 gap-2">{q[1].map(value => <button key={value} onClick={() => choose(value)} className={`rounded-xl border px-3 py-3 text-left text-xs font-bold transition ${answer.includes(value) ? "border-[#ff6b3d] bg-[#fff2ed] text-[#ff6b3d]" : "border-[#eadfd7] bg-white text-[#39464d] hover:border-[#ff6b3d]"}`}>{value}{answer.includes(value) && <Check className="float-right size-4" />}</button>)}</div>{question < 14 ? <button onClick={nextQuestion} disabled={!answer.length} className="mt-4 w-full rounded-xl bg-[#ff6b3d] py-3 text-sm font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-40">Next question <ArrowRight className="ml-2 inline size-4" /></button> : <button onClick={onFinalize} disabled={progress !== 15 || !answer.length} className="mt-4 w-full rounded-xl bg-[#ff6b3d] py-3 text-sm font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-40">Review my complete plan <ArrowRight className="ml-2 inline size-4" /></button>}</div></> }
+function Typing() { return <div className="flex gap-1.5 py-1"><i className="size-1.5 animate-bounce rounded-full bg-current opacity-40" /><i className="size-1.5 animate-bounce rounded-full bg-current opacity-40 [animation-delay:150ms]" /><i className="size-1.5 animate-bounce rounded-full bg-current opacity-40 [animation-delay:300ms]" /></div> }
+function Finalizing({ answers, onConfirm, onBack }: { answers: Record<number, string[]>; onConfirm: () => void; onBack: () => void }) { return <><div className="mb-5 flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff6b3d]">Decision board</p><h3 className="mt-1 text-2xl font-extrabold text-[#29363d]">Your plan is ready to review</h3><p className="mt-1 text-sm text-[#718088]">All 15 decisions are complete.</p></div><p className="text-2xl font-extrabold text-[#ff6b3d]">15/15</p></div><div className="grid gap-2 sm:grid-cols-2">{questions.map(([label], i) => <div key={label} className="flex items-center justify-between rounded-xl border border-[#eadfd7] bg-white px-4 py-3"><span><span className="block text-[11px] font-bold text-[#899397]">{i + 1} · {label}</span><span className="text-sm font-extrabold text-[#ff6b3d]">{(answers[i] || []).join(", ")}</span></span><Check className="size-4 text-[#42a67a]" /></div>)}</div></> }
+function Booking({ selectedFlight, setSelectedFlight, selectedHotel, setSelectedHotel, onPay }: { selectedFlight: string; setSelectedFlight: (v: string) => void; selectedHotel: string; setSelectedHotel: (v: string) => void; onPay: () => void }) { return <><div className="mb-5"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff6b3d]">One checkout</p><h3 className="mt-1 text-2xl font-extrabold text-[#29363d]">Everything in one place</h3></div><div className="space-y-3"><BookingRow icon={<Plane />} title="KUL → KIX · 12 Oct" options={["Malaysia Airlines · RM 1,289", "AirAsia X · RM 899"]} selected={selectedFlight} setSelected={setSelectedFlight} /><BookingRow icon={<Hotel />} title="5 nights · Gion, Kyoto" options={["The Celestine Kyoto Gion · RM 2,140", "Hotel Gracery Kyoto · RM 1,780"]} selected={selectedHotel} setSelected={setSelectedHotel} /><div className="flex items-center justify-between rounded-2xl bg-[#fff2ed] p-4"><div><p className="text-xs font-bold text-[#899397]">Total trip bundle</p><p className="text-xl font-extrabold text-[#29363d]">RM 4,486 <span className="text-xs font-bold text-[#899397]">incl. fees</span></p></div><CreditCard className="size-6 text-[#ff6b3d]" /></div></div></> }
+function BookingRow({ icon, title, options, selected, setSelected }: { icon: React.ReactNode; title: string; options: string[]; selected: string; setSelected: (v: string) => void }) { return <div className="rounded-2xl border border-[#eadfd7] bg-white p-4"><div className="mb-3 flex items-center gap-3"><span className="text-[#ff6b3d]">{icon}</span><p className="text-sm font-extrabold text-[#29363d]">{title}</p></div><div className="space-y-2">{options.map(x => <button key={x} onClick={() => setSelected(x.split(" · ")[0])} className={`flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-left text-xs font-bold ${selected === x.split(" · ")[0] ? "border-[#ff6b3d] bg-[#fff2ed]" : "border-[#eee9e4] text-[#718088]"}`}>{x}<span className={`size-4 rounded-full border-4 ${selected === x.split(" · ")[0] ? "border-[#ff6b3d]" : "border-[#d9d4cf]"}`} /></button>)}</div></div> }
+function Manage({ onOpenQr }: { onOpenQr: (v: string) => void }) { const [flight, setFlight] = useState("Malaysia Airlines"); return <><div className="mb-5"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff6b3d]">Your trip wallet</p><h3 className="mt-1 text-2xl font-extrabold text-[#29363d]">Kyoto, 12–17 Oct 2025</h3><p className="mt-1 text-sm text-[#718088]">Choose your flight, then tap any booking to view its mocked QR pass.</p></div><div className="mb-4 rounded-2xl border border-[#eadfd7] bg-white p-4"><p className="mb-3 text-sm font-extrabold text-[#29363d]">Which flight would you like to take?</p><div className="grid gap-2 sm:grid-cols-2">{["Malaysia Airlines · RM 1,289", "AirAsia X · RM 899"].map(option => <button key={option} onClick={() => setFlight(option.split(" · ")[0])} className={`rounded-xl border px-3 py-3 text-left text-xs font-bold ${flight === option.split(" · ")[0] ? "border-[#ff6b3d] bg-[#fff2ed]" : "border-[#eadfd7]"}`}>{option}</button>)}</div></div><div className="grid gap-3 sm:grid-cols-2"><ManageCard icon={<Plane />} title="Flight" detail={`${flight} · QR ready`} onClick={() => onOpenQr("Flight boarding pass")} /><ManageCard icon={<Hotel />} title="Accommodation" detail="The Celestine Kyoto Gion" onClick={() => onOpenQr("Hotel reservation pass")} /><ManageCard icon={<QrCode />} title="Attraction pass" detail="Fushimi Inari + 2 more" onClick={() => onOpenQr("Attraction QR pass")} /><ManageCard icon={<CircleHelp />} title="Trip support" detail="24/7 GoLah assistance" onClick={() => onOpenQr("Trip support pass")} /></div></> }
+function ManageCard({ icon, title, detail, onClick }: { icon: React.ReactNode; title: string; detail: string; onClick: () => void }) { return <button onClick={onClick} className="flex items-center gap-3 rounded-2xl border border-[#eadfd7] bg-white p-4 text-left hover:border-[#ff6b3d]"><span className="flex size-10 items-center justify-center rounded-xl bg-[#e9f7fb] text-[#267d95]">{icon}</span><span><span className="block text-xs font-bold text-[#899397]">{title}</span><span className="text-sm font-extrabold text-[#29363d]">{detail}</span></span><ChevronDown className="ml-auto size-4 -rotate-90 text-[#899397]" /></button> }

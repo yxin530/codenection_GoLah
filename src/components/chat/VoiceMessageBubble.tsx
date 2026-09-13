@@ -21,7 +21,7 @@ const animatedMessages = new Set<string>();
 
 export function VoiceMessageBubble({
   id = "voice-1",
-  senderName = "Yixin",
+  senderName = "Yun Xin",
   avatarInitials = "YX",
   avatarUrl,
   isAgent = false,
@@ -42,6 +42,9 @@ export function VoiceMessageBubble({
   useEffect(() => {
     if (!shouldAnimate) {
       setIsRecording(false);
+      if (animateMessage) {
+        onMessageSent?.();
+      }
       return;
     }
     animatedMessages.add(id);

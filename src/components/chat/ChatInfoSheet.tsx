@@ -57,7 +57,7 @@ export function ChatInfoSheet() {
                     <Avatar className="h-9 w-9 border border-background shadow-sm">
                       <AvatarFallback className="bg-primary/10 text-primary font-medium">YX</AvatarFallback>
                     </Avatar>
-                    <div className="text-sm font-medium">Yun Xin (You)</div>
+                    <div className="text-sm font-medium">Yixin (You)</div>
                   </div>
                   <div className="text-[10px] font-semibold tracking-wide text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">Organizer</div>
                 </div>

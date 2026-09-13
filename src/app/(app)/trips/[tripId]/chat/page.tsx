@@ -4,16 +4,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass , CheckCircle2, XCircle, Loader2} from 'lucide-react';
+import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass , CheckCircle2, XCircle, Loader2, QrCode} from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ChatInfoSheet } from '@/components/chat/ChatInfoSheet';
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { VoiceMessageBubble } from '@/components/chat/VoiceMessageBubble';
 import { AttractionSwiper } from '@/components/chat/AttractionSwiper';
 import { AccommodationSwiper } from '@/components/chat/AccommodationSwiper';
+import { BoardingPass } from '@/components/chat/BoardingPass';
 import { BottomNav } from '@/components/layout/BottomNav';
 
-type Channel = "general" | "planning" | "accommodation" | "expenses" | "flights";
+type Channel = "general" | "planning" | "accommodation" | "expenses" | "manage";
 
 let globalInitialStep = 0;
 let globalDebateStep = -1;
@@ -36,6 +37,10 @@ export default function ChatHubPage() {
   const [topAccs, setTopAccs] = useState<string[]>(['Nine Hours Namba', 'Kyoto Ryokan Kinoe']);
   const [initialMessageStep, setInitialMessageStep] = useState(globalInitialStep);
   const [debateMessageStep, setDebateMessageStep] = useState(globalDebateStep);
+  const [selectedManageFlight, setSelectedManageFlight] = useState('Malaysia Airlines');
+  const [selectedManageHotel, setSelectedManageHotel] = useState('The Celestine Kyoto Gion');
+  const [bookingComplete, setBookingComplete] = useState(false);
+  const [activePass, setActivePass] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -57,7 +62,7 @@ export default function ChatHubPage() {
 
   useEffect(() => {
     if (swipingCompleted) {
-      setInitialMessageStep(5);
+      setInitialMessageStep(9);
       setDebateMessageStep(0);
     }
   }, [swipingCompleted]);
@@ -99,19 +104,19 @@ export default function ChatHubPage() {
       >
         <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "accommodation" ? "text-muted-foreground" : "opacity-70"}`} /> accommodation
       </Button>
-      <Button 
+      {swipingCompleted && bookingComplete && <Button 
         variant={activeChannel === "expenses" ? "secondary" : "ghost"} 
         onClick={() => handleChannelSelect("expenses")}
         className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "expenses" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
       >
         <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "expenses" ? "text-muted-foreground" : "opacity-70"}`} /> expenses
-      </Button>
+      </Button>}
       <Button 
-        variant={activeChannel === "flights" ? "secondary" : "ghost"} 
-        onClick={() => handleChannelSelect("flights")}
-        className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "flights" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+        variant={activeChannel === "manage" ? "secondary" : "ghost"} 
+        onClick={() => handleChannelSelect("manage")}
+        className={`w-full justify-start h-8 text-sm font-medium px-2 ${activeChannel === "manage" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
       >
-        <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "flights" ? "text-muted-foreground" : "opacity-70"}`} /> flights
+        <Hash className={`w-4 h-4 mr-1.5 ${activeChannel === "manage" ? "text-muted-foreground" : "opacity-70"}`} /> manage
       </Button>
     </>
   );
@@ -121,7 +126,7 @@ export default function ChatHubPage() {
       return (
         <>
           <MessageBubble
-            id="msg1"
+            id="group-msg1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:00 AM"
@@ -130,8 +135,8 @@ export default function ChatHubPage() {
             onMessageSent={() => setInitialMessageStep(1)}
           />
           {initialMessageStep >= 1 && <MessageBubble
-            id="msg2"
-            senderName="Yixin"
+            id="group-msg2"
+            senderName="Yun Xin"
             avatarInitials="YX"
             isCurrentUser={true}
             timestamp="10:05 AM"
@@ -140,7 +145,7 @@ export default function ChatHubPage() {
             onMessageSent={() => setInitialMessageStep(2)}
           />}
           {initialMessageStep >= 2 && <MessageBubble
-            id="msg3"
+            id="group-msg3"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:06 AM"
@@ -149,8 +154,8 @@ export default function ChatHubPage() {
             onMessageSent={() => setInitialMessageStep(3)}
           />}
           {initialMessageStep >= 3 && <VoiceMessageBubble
-            id="msg4"
-            senderName="Jing Yi"
+            id="group-msg4"
+            senderName="Jie Ying"
             avatarInitials="JY"
             isCurrentUser={false}
             timestamp="10:14 AM"
@@ -158,6 +163,44 @@ export default function ChatHubPage() {
             duration="0:08"
             animateMessage={initialMessageStep === 3}
             onMessageSent={() => setInitialMessageStep(4)}
+          />}
+          {initialMessageStep >= 4 && <MessageBubble
+            id="group-msg5"
+            senderName="Xuan Yu"
+            avatarInitials="XY"
+            isCurrentUser={false}
+            timestamp="10:15 AM"
+            content="Disneyland sounds amazing! I'm in for that."
+            animateMessage={initialMessageStep === 4}
+            onMessageSent={() => setInitialMessageStep(5)}
+          />}
+          {initialMessageStep >= 5 && <MessageBubble
+            id="group-msg6"
+            senderName="GoLah AI"
+            isAgent={true}
+            timestamp="10:16 AM"
+            content="Great! I've noted that down. I'll make sure to find the best route from our accommodation to Tokyo Disneyland."
+            animateMessage={initialMessageStep === 5}
+            onMessageSent={() => setInitialMessageStep(6)}
+          />}
+          {initialMessageStep >= 6 && <MessageBubble
+            id="group-msg7"
+            senderName="Yun Xin"
+            avatarInitials="YX"
+            isCurrentUser={true}
+            timestamp="10:18 AM"
+            content="Should we buy the tickets in advance or at the gate?"
+            animateMessage={initialMessageStep === 6}
+            onMessageSent={() => setInitialMessageStep(7)}
+          />}
+          {initialMessageStep >= 7 && <MessageBubble
+            id="group-msg8"
+            senderName="GoLah AI"
+            isAgent={true}
+            timestamp="10:19 AM"
+            content="I highly recommend buying in advance to avoid long queues! Once everyone completes the planning phase, I'll provide the booking links."
+            animateMessage={initialMessageStep === 7}
+            onMessageSent={() => setInitialMessageStep(8)}
           />}
 
           {swipingCompleted && (
@@ -169,7 +212,7 @@ export default function ChatHubPage() {
               </div>
 
               {debateMessageStep >= 0 && <MessageBubble
-                id="plan-start"
+                id="group-plan-start"
                 senderName="GoLah AI"
                 isAgent={true}
                 timestamp="10:20 AM"
@@ -179,7 +222,7 @@ export default function ChatHubPage() {
               />}
 
               {debateMessageStep >= 1 && <MessageBubble
-                id="ai-usj"
+                id="group-ai-usj"
                 senderName={`${topPlaces[0]} Agent`}
                 avatarInitials={getInitials(topPlaces[0])}
                 isAgent={true}
@@ -190,7 +233,7 @@ export default function ChatHubPage() {
               />}
 
               {debateMessageStep >= 2 && <MessageBubble
-                id="ai-castle"
+                id="group-ai-castle"
                 senderName={`${topPlaces[1]} Agent`}
                 avatarInitials={getInitials(topPlaces[1])}
                 isAgent={true}
@@ -201,7 +244,7 @@ export default function ChatHubPage() {
               />}
 
               {debateMessageStep >= 3 && <MessageBubble
-                id="ai-namba"
+                id="group-ai-namba"
                 senderName={`${topAccs[0]} Agent`}
                 avatarInitials={getInitials(topAccs[0])}
                 isAgent={true}
@@ -212,7 +255,7 @@ export default function ChatHubPage() {
               />}
 
               {debateMessageStep >= 4 && <MessageBubble
-                id="ai-kinoe"
+                id="group-ai-kinoe"
                 senderName={`${topAccs[1]} Agent`}
                 avatarInitials={getInitials(topAccs[1])}
                 isAgent={true}
@@ -223,8 +266,8 @@ export default function ChatHubPage() {
               />}
 
               {debateMessageStep >= 5 && <MessageBubble
-                id="usr-jy2"
-                senderName="Jing Yi"
+                id="group-usr-jy2"
+                senderName="Jie Ying"
                 avatarInitials="JY"
                 isCurrentUser={false}
                 timestamp="10:23 AM"
@@ -335,7 +378,7 @@ export default function ChatHubPage() {
       return (
         <>
           <MessageBubble
-            id="plan1"
+            id="group-plan1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:20 AM"
@@ -354,7 +397,7 @@ export default function ChatHubPage() {
       return (
         <>
           <MessageBubble
-            id="acc1"
+            id="group-acc1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:25 AM"
@@ -370,7 +413,9 @@ export default function ChatHubPage() {
     }
 
     if (activeChannel === "expenses") {
-      const flightCostUSD = 450;
+      const budgetChoice = mounted ? localStorage.getItem('golahTripBudget') : null;
+      const budgetMYR = budgetChoice?.includes('Under') ? 1500 : budgetChoice?.includes('1,500') ? 2500 : budgetChoice?.includes('2,500') ? 4000 : 4500;
+      const flightCostUSD = Math.round(Math.min(450, budgetMYR * 0.1));
       const flightCostMYR = flightCostUSD * 4.70;
       
       const accChoice = mounted ? localStorage.getItem('approvedPollAcc') : null;
@@ -394,12 +439,12 @@ export default function ChatHubPage() {
       const transportCostJPY = 16000;
       const transportCostMYR = transportCostJPY * 0.0315;
 
-      const totalMYR = flightCostMYR + accCostMYR + attrCostMYR + foodCostMYR + transportCostMYR;
+      const totalMYR = budgetMYR;
 
       return (
         <>
           <MessageBubble
-            id="exp1"
+            id="group-exp1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:30 AM"
@@ -426,39 +471,74 @@ export default function ChatHubPage() {
       );
     }
 
-    if (activeChannel === "flights") {
+    if (activeChannel === "manage") {
       return (
         <>
           <MessageBubble
-            id="flt1"
+            id="group-manage1"
             senderName="GoLah AI"
             isAgent={true}
             timestamp="10:45 AM"
-            content="I found some great flight options from KUL to KIX for your dates. The cheapest option is AirAsia X."
+            content="Your trip wallet is ready. Choose a flight first, then open any booking to view its QR pass."
           />
-          <div className="bg-card border border-border rounded-xl p-4 shadow-sm w-full max-w-sm ml-12">
-            <div className="flex justify-between items-center mb-4">
-              <span className="font-bold text-lg">KUL ✈️ KIX</span>
-              <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">Best Value</span>
-            </div>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <div>
-                  <p className="font-semibold text-lg">08:00</p>
-                  <p className="text-muted-foreground text-xs">KUL (T2)</p>
-                </div>
-                <div className="flex flex-col items-center justify-center flex-1 px-4 text-xs text-muted-foreground">
-                  <span className="border-b border-dashed w-full text-center pb-1 mb-1">6h 30m</span>
-                  <span>Direct</span>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-lg">15:30</p>
-                  <p className="text-muted-foreground text-xs">KIX (T1)</p>
-                </div>
+          {!bookingComplete && (
+            <div className="bg-card border border-border rounded-xl p-4 shadow-sm w-full max-w-sm ml-12">
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-bold text-lg">KUL ✈️ KIX</span>
+                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">Best Value</span>
               </div>
-              <Button className="w-full mt-2 bg-[#ff6b3d] hover:bg-[#f45d30] text-white">Select Flight - $450</Button>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-semibold text-lg">08:00</p>
+                    <p className="text-muted-foreground text-xs">KUL (T2)</p>
+                  </div>
+                  <div className="flex flex-col items-center justify-center flex-1 px-4 text-xs text-muted-foreground">
+                    <span className="border-b border-dashed w-full text-center pb-1 mb-1">6h 30m</span>
+                    <span>Direct</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-lg">15:30</p>
+                    <p className="text-muted-foreground text-xs">KIX (T1)</p>
+                  </div>
+                </div>
+                <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your airline</p><div className="space-y-2">{['Malaysia Airlines · RM 1,289', 'AirAsia X · RM 899'].map((option) => <Button key={option} variant={selectedManageFlight === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageFlight(option.split(' · ')[0])} className="w-full justify-between"><span>{option}</span>{selectedManageFlight === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}</div>
+                <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your accommodation</p><div className="space-y-2">{['The Celestine Kyoto Gion · RM 2,140', 'Hotel Gracery Kyoto · RM 1,780'].map((option) => <Button key={option} variant={selectedManageHotel === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageHotel(option.split(' · ')[0])} className="w-full justify-between"><span>{option}</span>{selectedManageHotel === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}</div><Button onClick={() => { localStorage.setItem('golahBookingComplete', 'true'); setBookingComplete(true); }} className="mt-3 w-full bg-[#ff6b3d] text-white hover:bg-[#f45d30]">Confirm booking</Button>
+              </div>
             </div>
-          </div>
+          )}
+          {bookingComplete && (
+            <div className="ml-12 mt-4 max-w-lg">
+              <div className="rounded-2xl border border-green-200 bg-green-50/60 p-4 mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Check className="w-4 h-4 text-green-700" />
+                  <p className="text-sm font-bold text-green-700">Booking confirmed!</p>
+                </div>
+                <p className="text-xs text-green-600">Your flight and passes are ready.</p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {['Flight boarding pass', 'Hotel reservation pass', 'Attraction QR pass', 'Trip support pass'].map((label) => (
+                  <button key={label} onClick={() => setActivePass(label)} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left text-sm font-semibold hover:border-[#ff6b3d]">
+                    <QrCode className="h-5 w-5 text-[#ff6b3d]" />{label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {activePass === 'Flight boarding pass' && (
+            <BoardingPass airline={selectedManageFlight} hotel={selectedManageHotel} onClose={() => setActivePass(null)} />
+          )}
+          {activePass && activePass !== 'Flight boarding pass' && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5">
+              <div className="w-full max-w-sm rounded-2xl bg-background p-6 text-center shadow-xl">
+                <button onClick={() => setActivePass(null)} className="float-right text-muted-foreground">×</button>
+                <QrCode className="mx-auto mt-3 h-44 w-44" />
+                <h3 className="mt-4 text-lg font-bold">{activePass}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">Mocked pass · Yun Xin · Kyoto trip · 12–17 Oct 2025</p>
+                <Button onClick={() => setActivePass(null)} className="mt-5 w-full bg-[#ff6b3d] text-white">Close pass</Button>
+              </div>
+            </div>
+          )}
         </>
       );
     }
@@ -503,6 +583,7 @@ export default function ChatHubPage() {
             <span className="font-bold text-base">{activeChannel}</span>
           </div>
           <ChatInfoSheet />
+          <div className="absolute inset-x-0 top-full z-10 flex gap-1 border-b border-border bg-background px-4 py-2"><span className="text-[10px] font-bold text-[#ff6b3d]">Discussion</span><div className="mt-1 h-1 flex-1 rounded-full bg-[#ff6b3d]" /><span className={`text-[10px] font-bold ${activeChannel === "manage" ? "text-[#ff6b3d]" : "text-[#899397]"}`}>Finalizing</span><div className="mt-1 h-1 flex-1 rounded-full bg-[#ff6b3d]" /><span className={`text-[10px] font-bold ${activeChannel === "manage" ? "text-[#ff6b3d]" : "text-[#899397]"}`}>Booking</span><div className={`mt-1 h-1 flex-1 rounded-full ${activeChannel === "manage" ? "bg-[#ff6b3d]" : "bg-[#ebe6e1]"}`} /><span className={`text-[10px] font-bold ${activeChannel === "manage" ? "text-[#ff6b3d]" : "text-[#899397]"}`}>Manage</span></div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">

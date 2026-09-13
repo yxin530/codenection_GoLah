@@ -36,6 +36,9 @@ export function MessageBubble({
   useEffect(() => {
     if (!shouldAnimate) {
       setIsTyping(false);
+      if (animateMessage) {
+        onMessageSent?.();
+      }
       return;
     }
     animatedMessages.add(id);
