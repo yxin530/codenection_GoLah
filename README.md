@@ -291,10 +291,11 @@ Agents can read relevant information, use tools, analyse the trip, generate reco
 
 ### 💻 Build Plan
 | **Phase** | **Focus** |
-| Phase 1 | Complete the remaining features and polish the overall UI for a better user experience |
-| Phase 2 | Connect the frontend with the backend, database, and required services to make the features fully functional |
-| Phase 3 | Test the application thoroughly to identify and fix bugs, errors, and integration issues |
-| Phase 4 | Perform final UI improvements and another round of testing before preparing application for deployment |
+| :--- | :--- |
+| Phase 1 | Complete the remaining features and polish the overall UI for a better user experience. |
+| Phase 2 | Connect the frontend with the backend, database, and required services to make the features fully functional. |
+| Phase 3 | Test the application thoroughly to identify and fix bugs, errors, and integration issues. |
+| Phase 4 | Perform final UI improvements and another round of testing before preparing application for deployment. |
 
 The MVP focuses on delivering the required GoLah experience rather than implementing every possible future travel feature.
 
