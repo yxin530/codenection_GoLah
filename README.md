@@ -76,6 +76,7 @@ The following ideas were evaluated during ideation, with the selected concepts l
 | **Standalone Expense Tracking** | ❌ Dropped | AI bill splitting and currency conversion already cover the core financial needs for the current scope, making a separate expense-tracking feature unnecessary. |
 
 ## 2.2 Ideation Boards
+**Ideation Board link:** [Public Link](https://canva.link/zoecpnfhayvdeuy)
 
 ### 🎨 Moodboard
 
@@ -139,7 +140,6 @@ As people who travel, we understand the frustrations of planning a trip — deci
 
 **UI Prototype:** [[Public Link](https://codenection-go-lah.vercel.app/)]
 
-> 💡 *Check that the prototype opens in an incognito window. Embed or link 4–8 key screens with short captions explaining the main interactions.*
 
 ---
 
@@ -288,6 +288,13 @@ Agents can read relevant information, use tools, analyse the trip, generate reco
 - The system must **not claim an external action succeeded** unless the relevant tool/API confirms success.
 
 ## 5.4 Build Plan & Scope
+
+### 💻 Build Plan
+| **Phase** | **Focus** |
+| Phase 1 | Complete the remaining features and polish the overall UI for a better user experience |
+| Phase 2 | Connect the frontend with the backend, database, and required services to make the features fully functional |
+| Phase 3 | Test the application thoroughly to identify and fix bugs, errors, and integration issues |
+| Phase 4 | Perform final UI improvements and another round of testing before preparing application for deployment |
 
 The MVP focuses on delivering the required GoLah experience rather than implementing every possible future travel feature.
 
