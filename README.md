@@ -4,7 +4,7 @@
 
 **Team:** Chor Yun Xin · Ang Jie Ying · Kung Xuan Yu  
 **Problem Statement:** Travel Planner  
-**Video Presentation:** [Unlisted YouTube Link]  
+**Video Presentation:** [Unlisted YouTube Link](https://youtu.be/YVA3bFIX1Bo?si=-3Tt6G5Z2ZGcokAz)  
 **Presentation Slides:** [Public Link](https://canva.link/5y3bbbvc630oqnc)
 **UI Prototype:** [Public Link](https://codenection-go-lah.vercel.app/)
 
@@ -34,6 +34,11 @@ Travel planning is fragmented across multiple apps, forcing travellers to switch
 
 **Our Solution**
 GoLah is an AI-powered travel companion that brings trip planning, travel information, communication, and essential travel tools into one platform. Instead of switching between multiple apps, travellers can manage their itinerary, travel files, maps, currency, group chat, bill splitting, and travel assistance within a single trip-based platform. Its context-aware multi-agent AI uses relevant trip, group, and conversation information to provide more personalised assistance. GoLah supports both solo and group travellers, helping them plan, coordinate, discover, and handle unexpected travel situations in one place.
+
+**Who is this for?**
+- **Solo Travellers:** Individuals looking for a simplified, AI-assisted way to research, plan, and manage their trips without juggling multiple apps.
+- **Group Travellers:** Friends, families, or teams who need a unified space to discuss plans, coordinate preferences, share itineraries, and split bills seamlessly.
+- **Undecided Travellers:** People who want to travel but don't know where to go, leveraging community posts and AI discovery tools to find inspiration.
 
 ### 🌟 Key Features
 
