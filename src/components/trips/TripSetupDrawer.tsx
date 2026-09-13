@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Bot, Check, ChevronDown, CircleHelp, CreditCard, Hotel, Plane, QrCode, Send, Sparkles, X } from "lucide-react";
 
@@ -21,10 +21,63 @@ const questions = [
   ["Should I include travel insurance?", ["Add standard cover", "Show me options", "No thanks", "I’ll decide later"]],
   ["Anything else I should know?", ["Keep it flexible", "Surprise me", "I’ll add a note", "Nothing else"]],
 ] as const;
-interface Props { isOpen: boolean; onClose: () => void; tripType: "Solo Travel" | "Group Travel" | null; }
+const DEMO_ANSWERS: string[][] = [
+  ['12–17 Oct'],
+  ['Kyoto', 'Osaka'],
+  ['Culture + history', 'Food adventure'],
+  ['Universal Studios Japan'],
+  ['Balanced'],
+  ['No restrictions'],
+  ['Direct first'],
+  ['Economy'],
+  ['Ryokan'],
+  ['Near the action'],
+  ['RM 2,500–4,000'],
+  ['Yes, include it'],
+  ['20 kg checked'],
+  ['Add standard cover'],
+  ['Surprise me'],
+];
+interface Props { isOpen: boolean; onClose: () => void; tripType: "Solo Travel" | "Group Travel" | null; isDemo?: boolean; }
 
-export function TripSetupDrawer({ isOpen, onClose, tripType }: Props) {
+export function TripSetupDrawer({ isOpen, onClose, tripType, isDemo = false }: Props) {
   const router = useRouter(); const [stage, setStage] = useState<Stage>("discussion"); const [question, setQuestion] = useState(0); const [answers, setAnswers] = useState<Record<number, string[]>>({}); const [message, setMessage] = useState(""); const [selectedFlight, setSelectedFlight] = useState("Malaysia Airlines"); const [selectedHotel, setSelectedHotel] = useState("The Celestine Kyoto Gion"); const [qrTitle, setQrTitle] = useState<string | null>(null);
+  const demoStarted = useRef(false);
+  useEffect(() => {
+    if (!isDemo || !isOpen) { demoStarted.current = false; return; }
+    if (demoStarted.current) return;
+    demoStarted.current = true;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let delay = 800;
+    DEMO_ANSWERS.forEach((demoAnswers, qIndex) => {
+      demoAnswers.forEach((answer, ansIdx) => {
+        const t = setTimeout(() => {
+          setAnswers(prev => ({ ...prev, [qIndex]: [...(prev[qIndex] || []), answer] }));
+        }, delay + ansIdx * 380);
+        timers.push(t);
+      });
+      delay += demoAnswers.length * 380 + 320;
+      if (qIndex < 14) {
+        const t = setTimeout(() => setQuestion(qIndex + 1), delay);
+        timers.push(t);
+        delay += 520;
+      } else {
+        const t = setTimeout(() => {
+          const finalAnswers = DEMO_ANSWERS.reduce((acc: Record<number, string[]>, a, i) => ({ ...acc, [i]: a }), {});
+          localStorage.setItem('golahTripAnswers', JSON.stringify(finalAnswers));
+          localStorage.setItem('golahTripBudget', DEMO_ANSWERS[10][0]);
+          setStage('finalizing');
+        }, delay);
+        timers.push(t);
+        // Auto-navigate to chat after showing the finalizing screen briefly
+        const proceed = setTimeout(() => {
+          router.push(`/analyzing?type=group&t=${Date.now()}`);
+        }, delay + 2200);
+        timers.push(proceed);
+      }
+    });
+    return () => { timers.forEach(clearTimeout); demoStarted.current = false; };
+  }, [isDemo, isOpen]);
   if (!isOpen || !tripType) return null;
   const close = () => { setStage("discussion"); setQuestion(0); setAnswers({}); onClose(); }; const answer = answers[question] || []; const progress = Object.keys(answers).length;
   const choose = (value: string) => setAnswers(prev => { const current = prev[question] || []; return { ...prev, [question]: current.includes(value) ? current.filter(item => item !== value) : [...current, value] }; });
@@ -35,6 +88,7 @@ export function TripSetupDrawer({ isOpen, onClose, tripType }: Props) {
   return <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#132432]/55 p-0 backdrop-blur-sm sm:items-center sm:p-6"><section className="flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[30px] bg-[#fffdfa] shadow-2xl sm:rounded-[30px]">
     <header className="border-b border-[#eadfd7] px-5 pb-4 pt-5 sm:px-8"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-2xl bg-[#ff6b3d] text-white"><Sparkles className="size-5" /></div><div><p className="text-xs font-bold uppercase tracking-[.18em] text-[#ff6b3d]">GoLah copilot</p><h2 className="text-lg font-extrabold text-[#24323a]">{tripType.replace(" Travel", "")} trip, made simple</h2></div></div><button onClick={close}><X className="size-5 text-[#718088]" /></button></div><div className="mt-6 grid grid-cols-4 gap-2">{stages.map((item, i) => <button key={item} onClick={() => (i === 0 || (i < 2 && progress === 15) || i <= stageIndex) && setStage(item)} className="text-left"><div className={`mb-2 h-1.5 rounded-full ${i <= stageIndex ? "bg-[#ff6b3d]" : "bg-[#ebe6e1]"}`} /><span className={`text-[11px] font-bold capitalize ${i === stageIndex ? "text-[#ff6b3d]" : "text-[#899397]"}`}>{i + 1}. {item}</span></button>)}</div></header>
     <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-6">
+      {isDemo && stage === 'discussion' && <div className="mb-4 flex items-center gap-2.5 rounded-xl border border-[#ff6b3d]/20 bg-[#fff7f5] px-4 py-2.5"><span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[#ff6b3d]" /><span className="text-xs font-bold text-[#ff6b3d]">Demo Mode — auto-selecting your preferences...</span></div>}
       {stage === "discussion" && <Discussion question={question} progress={progress} answer={answer} choose={choose} nextQuestion={nextQuestion} onFinalize={() => { localStorage.setItem("golahTripAnswers", JSON.stringify(answers)); localStorage.setItem("golahTripBudget", answers[10]?.[0] || "Flexible"); setStage("finalizing"); }} message={message} setMessage={setMessage} />}
       {stage === "finalizing" && <Finalizing answers={answers} onConfirm={startChat} onBack={() => setStage("discussion")} />}
       {stage === "booking" && <Booking selectedFlight={selectedFlight} setSelectedFlight={setSelectedFlight} selectedHotel={selectedHotel} setSelectedHotel={setSelectedHotel} onPay={() => setStage("manage")} />}

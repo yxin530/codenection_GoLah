@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Search, UserRound, UsersRound, Video, Heart } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronRight, Home as HomeIcon, MapPin, MessageCircle, Play, Search, UserRound, UsersRound, Video, Heart } from "lucide-react";
+import { useState, useEffect, useCallback } from 'react';
 import { TripSetupDrawer } from "@/components/trips/TripSetupDrawer";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { initDemoMode } from "@/lib/demoMode";
 
 const flights = [
   { title: "Kuala Lumpur to Bangkok", meta: "From RM 219 · 2h 15m", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=900&q=80" },
@@ -59,20 +61,58 @@ function TravelCard({ title, image, video = false, authorName, authorAvatar, lik
 
 function ImageCard({ title, meta, image, video = false }: { title: string; meta?: string; image: string; video?: boolean }) {
   return <article className="group relative aspect-[0.88] overflow-hidden rounded-2xl bg-[#d2d2d2] shadow-sm"><Image src={image} alt="" fill sizes="(max-width: 640px) 45vw, 280px" className="object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent" />{video && <span className="absolute right-3 top-3 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm"><Video className="size-4" /></span>}<div className="absolute inset-x-3 bottom-3 text-white"><p className="line-clamp-2 text-sm font-bold leading-tight">{title}</p>{meta && <p className="mt-1 text-xs font-medium text-white/80">{meta}</p>}</div></article>;
-}
-
-export default function Home() {
+}export default function Home() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [tripType, setTripType] = useState<"Solo Travel" | "Group Travel" | null>(null);
+  const [isDemoDrawer, setIsDemoDrawer] = useState(false);
+
+  const handleTryDemo = useCallback(() => {
+    initDemoMode();
+    setTripType("Group Travel");
+    setIsDemoDrawer(true);
+    setDrawerOpen(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (e.code === "Space" && tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "BUTTON") {
+        e.preventDefault();
+        handleTryDemo();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleTryDemo]);
 
   const openDrawer = (type: "Solo Travel" | "Group Travel") => {
     setTripType(type);
     setDrawerOpen(true);
   };
   return <main className="min-h-screen bg-[#a9dcfb] text-[#ff6b3d]"><div className="mx-auto min-h-screen max-w-[1180px] bg-white shadow-[0_0_40px_rgba(20,100,150,0.12)] sm:px-8 lg:px-12">
-    <header className="px-5 pb-7 pt-6 sm:px-0 sm:pt-10"><div className="flex items-start justify-between"><Link href="/" aria-label="GoLah home"><img src="/assets/logo.png" alt="GoLah" className="h-10 w-auto drop-shadow-sm" /></Link><Link href="/onboarding" className="rounded-full bg-[#fff2ed] px-4 py-2 text-xs font-bold text-[#ff6b3d] transition hover:bg-[#ffe2d7]">Plan a trip</Link></div><div className="relative mt-8"><Search className="pointer-events-none absolute left-5 top-1/2 size-6 -translate-y-1/2 text-[#a9dcfb]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Where are you going?" aria-label="Search destinations" className="h-14 w-full rounded-full border-2 border-[#a9dcfb] bg-white pl-14 pr-5 text-base font-semibold text-[#333] outline-none placeholder:text-[#a9dcfb] focus:border-[#ff6b3d] sm:text-lg" /></div>{query && <p className="mt-2 pl-5 text-sm font-semibold text-[#9a9a9a]">Showing ideas for “{query}”</p>}</header>
-    <div className="space-y-8 px-5 pb-32 sm:px-0 sm:pb-36 lg:space-y-10"><section><h1 className="mb-4 text-2xl font-extrabold tracking-[-0.04em] sm:text-3xl">Customise your trip with AI</h1><div className="grid grid-cols-2 overflow-hidden rounded-[24px] bg-[#ff6b3d] text-white"><button onClick={() => openDrawer("Solo Travel")} className="flex min-h-28 w-full items-center gap-3 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UserRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Solo Trip</span></button><button onClick={() => openDrawer("Group Travel")} className="flex min-h-28 w-full items-center gap-3 border-l border-white/80 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UsersRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Group Trip</span></button></div></section>
+    <header className="px-5 pb-7 pt-6 sm:px-0 sm:pt-10"><div className="flex items-start justify-between"><Link href="/" aria-label="GoLah home"><img src="/assets/logo.png" alt="GoLah" className="h-10 w-auto drop-shadow-sm" /></Link><Link href="/onboarding" className="rounded-full bg-[#fff2ed] px-4 py-2 text-xs font-bold text-[#ff6b3d] transition hover:bg-[#ffe2d7]">Plan a trip</Link></div><div className="relative mt-8"><Search className="pointer-events-none absolute left-5 top-1/2 size-6 -translate-y-1/2 text-[#a9dcfb]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Where are you going?" aria-label="Search destinations" className="h-14 w-full rounded-full border-2 border-[#a9dcfb] bg-white pl-14 pr-5 text-base font-semibold text-[#333] outline-none placeholder:text-[#a9dcfb] focus:border-[#ff6b3d] sm:text-lg" /></div>{query && <p className="mt-2 pl-5 text-sm font-semibold text-[#9a9a9a]">Showing ideas for "{query}"</p>}</header>
+    <div className="space-y-8 px-5 pb-32 sm:px-0 sm:pb-36 lg:space-y-10"><section><h1 className="mb-4 text-2xl font-extrabold tracking-[-0.04em] sm:text-3xl">Customise your trip with AI</h1><div className="grid grid-cols-2 overflow-hidden rounded-[24px] bg-[#ff6b3d] text-white"><button onClick={() => openDrawer("Solo Travel")} className="flex min-h-28 w-full items-center gap-3 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UserRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Solo Trip</span></button><button onClick={() => openDrawer("Group Travel")} className="flex min-h-28 w-full items-center gap-3 border-l border-white/80 px-5 transition hover:bg-[#f45d30] sm:justify-center sm:gap-5"><UsersRound className="size-10 text-[#a9dcfb]" strokeWidth={1.7} /><span className="text-base font-bold sm:text-lg">Group Trip</span></button></div>
+
+      {/* ── Try Demo ── */}
+      <button
+        id="try-demo-btn"
+        onClick={handleTryDemo}
+        className="mt-3 w-full flex items-center gap-4 rounded-[24px] bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white px-5 py-4 shadow-lg hover:shadow-xl hover:scale-[1.015] active:scale-[0.98] transition-all duration-200 border border-white/10 group"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F26C3D] shadow-lg group-hover:scale-110 transition-transform duration-200">
+          <Play className="h-5 w-5 fill-white text-white ml-0.5" />
+        </span>
+        <span className="flex flex-col items-start gap-0.5 flex-1 text-left">
+          <span className="text-base font-extrabold tracking-tight">Try Demo</span>
+          <span className="text-xs font-medium text-white/50">See the full prototype instantly · Group trip to Osaka &amp; Kyoto</span>
+        </span>
+        <span className="hidden sm:flex items-center text-[10px] font-bold text-white/30 bg-white/5 border border-white/10 px-2.5 py-1.5 rounded-lg font-mono shrink-0">
+          Space
+        </span>
+      </button>
+    </section>
       <section><SectionHeading>Recommended cheapest flights</SectionHeading><div className="grid grid-cols-2 gap-4 sm:gap-6">{flights.map((flight) => <ImageCard key={flight.title} {...flight} />)}</div></section>
       <section><SectionHeading>Explore Malaysia</SectionHeading><div className="grid grid-cols-2 gap-4 sm:gap-6">{malaysia.map((place) => <ImageCard key={place.title} {...place} />)}</div></section>
       <section>
@@ -89,6 +129,6 @@ export default function Home() {
       </section>
     </div>
     <BottomNav />
-    <TripSetupDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} tripType={tripType} />
+    <TripSetupDrawer isOpen={drawerOpen} onClose={() => { setDrawerOpen(false); setIsDemoDrawer(false); }} tripType={tripType} isDemo={isDemoDrawer} />
   </div></main>;
 }
