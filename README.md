@@ -140,12 +140,47 @@ As people who travel, we understand the frustrations of planning a trip — deci
 
 **UI Prototype:** [[Public Link](https://codenection-go-lah.vercel.app/)]
 
+### AI-Driven Questionnaire & Finalizing
+![Questionnaire](docs/assets/questionnaire.png)
+![AI Finalizing](docs/assets/ai-finalizing.png)
+
+### Group Chat & AI Debate
+![Group Chat](docs/assets/groupchat.png)
+![AI Debate](docs/assets/ai-debate.png)
+![Poll After Debate](docs/assets/poll-aft-debate.png)
+
+### Planning & Accommodation
+![Planning Section](docs/assets/planning-section.png)
+![Accommodation Section](docs/assets/accomo-section.png)
+
+### Trip Itinerary & Map Route
+![Trip Itinerary 1](docs/assets/trip-itinerary.png)
+![Trip Itinerary 2](docs/assets/trip-itinerary2.png)
+![Map Route](docs/assets/map-route.png)
+
+### Trip Management
+![Manage Section](docs/assets/manage-section.png)
 
 ---
 
 # 4. ✨ What Makes It Different
 
-GoLah treats the **trip as the central object** and layers context-aware AI on top of a unified travel platform, rather than solving only one part of the travel experience.
+> Existing apps provide useful travel tools, but GoLah connects them around **one central trip context**.  
+> Our AI understands the group's preferences, itinerary, conversations, and travel information to provide **context-aware assistance and 
+
+## 🆚 GoLah vs Existing Travel Apps
+
+| Feature | **GoLah** | **TripIt** | **Wanderlog** | **TravelSpend** |
+|---|---|---|---|---|
+| 🤖 AI Trip Context | 🟢 | 🔴 | 🟡 | 🔴 |
+| 🗳️ AI Group Decision-Making | 🟢 | 🔴 | 🔴 | 🔴 |
+| 👥 Group Collaboration | 🟢 | 🟡 | 🟢 | 🟡 |
+| 🧳 Travel Files Management | 🟢 | 🟢 | 🟢 | 🔴 |
+| 🚨 Crisis Assistance | 🟢 | 🟡 | 🟡 | 🔴 |
+| 🧾 Bill Splitting | 🟢 | 🔴 | 🟢 | 🟢|
+| 👥 Smart Map + Community content | 🟢 | 🟡 | 🟢 | 🔴 |
+
+**🟢 Strong / 🟡 Partial / 🔴 Not a core feature**
 
 ## 🌟 Novel Features
 
