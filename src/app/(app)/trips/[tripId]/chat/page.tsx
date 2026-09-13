@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, Check, Vote, Compass , CheckCircle2, XCircle, Loader2, QrCode} from 'lucide-react';
+import { Send, Mic, Image as ImageIcon, Hash, Menu, Lock, ArrowRight, ArrowLeft, Check, Vote, Compass , CheckCircle2, XCircle, Loader2, QrCode} from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ChatInfoSheet } from '@/components/chat/ChatInfoSheet';
 import { MessageBubble } from '@/components/chat/MessageBubble';
@@ -530,12 +530,14 @@ export default function ChatHubPage() {
           )}
           {activePass && activePass !== 'Flight boarding pass' && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5">
-              <div className="w-full max-w-sm rounded-2xl bg-background p-6 text-center shadow-xl">
-                <button onClick={() => setActivePass(null)} className="float-right text-muted-foreground">×</button>
+              <div className="w-full max-w-sm rounded-2xl bg-background p-6 text-center shadow-xl relative">
+                <button onClick={() => setActivePass(null)} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground">
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
                 <QrCode className="mx-auto mt-3 h-44 w-44" />
                 <h3 className="mt-4 text-lg font-bold">{activePass}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">Mocked pass · Yun Xin · Kyoto trip · 12–17 Oct 2025</p>
-                <Button onClick={() => setActivePass(null)} className="mt-5 w-full bg-[#ff6b3d] text-white">Close pass</Button>
+                <Button onClick={() => setActivePass(null)} className="mt-5 w-full bg-[#ff6b3d] text-white hover:bg-[#d85e33]">Close pass</Button>
               </div>
             </div>
           )}

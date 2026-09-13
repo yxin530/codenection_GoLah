@@ -1,6 +1,6 @@
 "use client";
 
-import { QrCode, Plane, User, Calendar, Clock, MapPin, X } from "lucide-react";
+import { QrCode, Plane, User, Calendar, Clock, MapPin, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface BoardingPassProps {
@@ -23,16 +23,21 @@ export function BoardingPass({ airline, hotel, onClose }: BoardingPassProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-background shadow-2xl overflow-hidden">
+      {/* Floating Left Center Back Button */}
+      <button 
+        onClick={onClose} 
+        className="fixed left-0 top-1/2 -translate-y-1/2 bg-[#ff6b3d] hover:bg-[#d85e33] text-white p-3 pr-2 pl-3 rounded-r-2xl shadow-xl z-[60] transition-transform active:scale-95"
+      >
+        <ArrowLeft className="h-6 w-6" />
+      </button>
+
+      <div className="w-full max-w-md rounded-2xl bg-background shadow-2xl overflow-y-auto max-h-[90vh] relative custom-scrollbar">
         {/* Header */}
-        <div className="bg-[#ff6b3d] px-6 py-4 flex items-center justify-between">
+        <div className="bg-[#ff6b3d] px-6 py-4 flex items-center justify-center">
           <div className="flex items-center gap-2">
             <Plane className="h-5 w-5 text-white" />
             <span className="text-white font-bold text-lg">{airline}</span>
           </div>
-          <button onClick={onClose} className="text-white/80 hover:text-white">
-            <X className="h-5 w-5" />
-          </button>
         </div>
 
         {/* Title */}
