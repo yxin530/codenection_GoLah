@@ -113,6 +113,17 @@ The mind map shows how the team's ideas expanded from the central travel-plannin
 
 The problem tree shows the root causes and consequences of fragmented travel planning and how the problem affects both individual and group travellers.
 
+### ❓ Why We Choose Travel Planner
+
+![Why](docs/assets/why.png)
+**We started with the Stress Manager idea, but realized it had limitations.**
+Stress is highly personal, and it is difficult to understand how someone truly feels based only on their inputs. We also felt that users may not always act on generic stress-management suggestions, while the market already has many similar solutions.
+
+**Travel planning felt more natural to us because we experience the problem ourselves.**
+As people who travel, we understand the frustrations of planning a trip — deciding where to go, what to do, managing schedules and budgets, and even planning when we have no idea where to start.
+
+**So, we decided to build GoLah — bringing the entire trip-planning experience into one platform, making travel planning simpler, more personalized, and less stressful.**
+
 ## 2.3 Mentor Consultation
 
 | 📅 Date | 👤 Mentor | 💬 Key Feedback | 🔄 Our Decision |
