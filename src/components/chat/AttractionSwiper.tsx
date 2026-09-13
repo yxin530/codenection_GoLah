@@ -199,7 +199,7 @@ export function AttractionSwiper({
                   </div>
                   <h3 className="text-xl font-bold mb-2">You're all done!</h3>
                   <p className="text-sm text-muted-foreground mb-6">
-                    Waiting for group members (Jing Yi, Xuan Yu) to finish swiping so I can generate the group itinerary report...
+                    Waiting for group members (Jie Ying, Xuan Yu) to finish swiping so I can generate the group itinerary report...
                   </p>
                   
                   <div className="w-full bg-muted rounded-full h-2 mb-2 overflow-hidden">

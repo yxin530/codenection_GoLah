@@ -100,7 +100,7 @@ export function BoardingPass({ airline, hotel, onClose }: BoardingPassProps) {
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <User className="h-3 w-3" /> Passenger
             </p>
-            <p className="font-semibold">YIXIN / ANG</p>
+            <p className="font-semibold">YUN XIN / CHOR</p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Seat</p>

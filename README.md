@@ -142,24 +142,41 @@ As people who travel, we understand the frustrations of planning a trip — deci
 
 ### AI-Driven Questionnaire & Finalizing
 ![Questionnaire](docs/assets/questionnaire.png)
+*Interactive AI questionnaire gathering travel preferences and details.*
+
 ![AI Finalizing](docs/assets/ai-finalizing.png)
+*AI finalizing the trip decisions and setting up the trip dashboard.*
 
 ### Group Chat & AI Debate
 ![Group Chat](docs/assets/groupchat.png)
+*The central group chat for communicating and coordinating with team members.*
+
 ![AI Debate](docs/assets/ai-debate.png)
+*AI agents debating and analyzing preferences to recommend the best options.*
+
 ![Poll After Debate](docs/assets/poll-aft-debate.png)
+*A generated poll allowing members to vote on the AI's top recommendations.*
 
 ### Planning & Accommodation
 ![Planning Section](docs/assets/planning-section.png)
+*A dedicated planning tab separating itineraries from general chat.*
+
 ![Accommodation Section](docs/assets/accomo-section.png)
+*Swiper interface for users to easily shortlist accommodation choices.*
 
 ### Trip Itinerary & Map Route
 ![Trip Itinerary 1](docs/assets/trip-itinerary.png)
+*The final generated trip itinerary organized by day.*
+
 ![Trip Itinerary 2](docs/assets/trip-itinerary2.png)
+*Detailed view of the daily scheduled activities and transit.*
+
 ![Map Route](docs/assets/map-route.png)
+*Smart map view displaying the recommended routes and places.*
 
 ### Trip Management
 ![Manage Section](docs/assets/manage-section.png)
+*Trip wallet for managing bookings, flight boarding passes, and QR tickets.*
 
 ---
 
