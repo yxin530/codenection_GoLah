@@ -7,17 +7,17 @@ import { MapPin, Clock, Plus, Share2, Download, Calendar, Users, Wallet, Star, C
 import { Badge } from '@/components/ui/badge';
 
 const ALL_PLACES: Record<string, any> = {
-  "Hotel Monterey Grasmere": { location: "Namba, Osaka", image: "https://images.unsplash.com/photo-1622359419139-4444585141f2?auto=format&fit=crop&w=400&q=80", type: "accommodation" },
-  "Cross Hotel Osaka": { location: "Dotonbori, Osaka", image: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?auto=format&fit=crop&w=400&q=80", type: "accommodation" },
-  "Kyoto Ryokan Kinoe": { location: "Gion, Kyoto", image: "https://images.unsplash.com/photo-1578469645762-4113063f256f?auto=format&fit=crop&w=400&q=80", type: "accommodation" },
-  "Nine Hours Namba": { location: "Namba, Osaka", image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80", type: "accommodation" },
-  "Ritz-Carlton Kyoto": { location: "Kyoto, Japan", image: "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?auto=format&fit=crop&w=400&q=80", type: "accommodation" },
-  "Universal Studios Japan": { location: "Konohana Ward", image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["Theme Park"] },
-  "Fushimi Inari Taisha": { location: "Fushimi Ward, Kyoto", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["Culture", "Shrine"] },
-  "Osaka Castle": { location: "Chuo Ward, Osaka", image: "https://images.unsplash.com/photo-1583335508892-747fceb4131b?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["History", "Castle"] },
-  "Arashiyama Bamboo Grove": { location: "Arashiyama, Kyoto", image: "https://images.unsplash.com/photo-1578469645762-4113063f256f?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["Nature"] },
-  "Kuromon Market": { location: "Nipponbashi, Osaka", image: "https://images.unsplash.com/photo-1623880590898-d14efdceab9a?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["Food Market"] },
-  "Dotonbori": { location: "Dotonbori, Osaka", image: "https://images.unsplash.com/photo-1559828551-789a8119bf74?auto=format&fit=crop&w=400&q=80", type: "activity", tags: ["Street Food"] }
+  "Hotel Monterey Grasmere": { location: "Namba, Osaka", image: "/assets/monterey-grasmere.jpeg", type: "accommodation" },
+  "Cross Hotel Osaka": { location: "Dotonbori, Osaka", image: "/assets/cross-hotel-osaka.png", type: "accommodation" },
+  "Kyoto Ryokan Kinoe": { location: "Gion, Kyoto", image: "/assets/kinoe.png", type: "accommodation" },
+  "Nine Hours Namba": { location: "Namba, Osaka", image: "/assets/nine-horus-mamba.jpeg", type: "accommodation" },
+  "Ritz-Carlton Kyoto": { location: "Kyoto, Japan", image: "/assets/carlton-kyoto.png", type: "accommodation" },
+  "Universal Studios Japan": { location: "Konohana Ward", image: "/assets/usj.jpeg", type: "activity", tags: ["Theme Park"] },
+  "Fushimi Inari Taisha": { location: "Fushimi Ward, Kyoto", image: "/assets/fushimi inari taisha.jpeg", type: "activity", tags: ["Culture", "Shrine"] },
+  "Osaka Castle": { location: "Chuo Ward, Osaka", image: "/assets/osaka-castle.jpeg", type: "activity", tags: ["History", "Castle"] },
+  "Arashiyama Bamboo Grove": { location: "Arashiyama, Kyoto", image: "/assets/bamboo-grove.jpeg", type: "activity", tags: ["Nature"] },
+  "Kuromon Market": { location: "Nipponbashi, Osaka", image: "/assets/dotonbori.jpeg", type: "activity", tags: ["Food Market"] },
+  "Dotonbori": { location: "Dotonbori, Osaka", image: "/assets/dotonbori.jpeg", type: "activity", tags: ["Street Food"] }
 };
 
 type ItineraryDay = {
@@ -74,7 +74,7 @@ export default function ItineraryPage() {
          time: '16:00', title: 'Explore Dotonbori', ...ALL_PLACES['Dotonbori']
        });
        day1Items.push({ type: 'transit', mode: 'Walk', duration: '5 min' });
-       day1Items.push({ time: '19:30', title: 'Dinner at Kani Doraku', location: 'Dotonbori', image: 'https://images.unsplash.com/photo-1580822184713-f66fbbbd5935?auto=format&fit=crop&w=400&q=80', type: 'food', rating: 4.6 });
+       day1Items.push({ time: '19:30', title: 'Dinner at Kani Doraku', location: 'Dotonbori', image: '/assets/dotonbori.jpeg', type: 'food', rating: 4.6 });
        d1Time = 20;
     }
 
@@ -82,7 +82,7 @@ export default function ItineraryPage() {
     if (likedPlaces.includes('Universal Studios Japan')) {
       day2Items.push({ time: '08:30', title: 'Universal Studios Japan (Early Entry)', ...ALL_PLACES['Universal Studios Japan'], note: 'Express passes booked!' });
       day2Items.push({ type: 'transit', mode: 'Train', duration: '35 min' });
-      day2Items.push({ time: '20:00', title: 'Late Dinner at Umeda Sky Building', location: 'Umeda', image: 'https://images.unsplash.com/photo-1622359419139-4444585141f2?auto=format&fit=crop&w=400&q=80', type: 'food' });
+      day2Items.push({ time: '20:00', title: 'Late Dinner at Umeda Sky Building', location: 'Umeda', image: '/assets/monterey-grasmere.jpeg', type: 'food' });
     } else {
       // generic Day 2 if USJ not selected
       day2Items.push({ time: '09:00', title: 'Breakfast near ' + accChoice, location: accDetails.location, type: 'food' });
@@ -128,7 +128,7 @@ export default function ItineraryPage() {
         <div 
           className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
           style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80')", 
+            backgroundImage: "url('/assets/fushimi inari taisha.jpeg')", 
             backgroundSize: 'cover', 
             backgroundPosition: 'center' 
           }}

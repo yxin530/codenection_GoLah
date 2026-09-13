@@ -38,17 +38,17 @@ const MapWithNoSSR = dynamic(() => import('@/components/map/LeafletMap'), {
 
 
 const ALL_PLACES: Record<string, any> = {
-  "Hotel Monterey Grasmere": { location: "Namba, Osaka", image: "https://images.unsplash.com/photo-1622359419139-4444585141f2?auto=format&fit=crop&w=400&q=80", type: "accommodation", desc: "Elegant European-style hotel with panoramic city views from the upper floors." },
-  "Cross Hotel Osaka": { location: "Dotonbori, Osaka", image: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?auto=format&fit=crop&w=400&q=80", type: "accommodation", desc: "Modern, stylish hotel located right in the heart of Dotonbori." },
-  "Kyoto Ryokan Kinoe": { location: "Gion, Kyoto", image: "https://images.unsplash.com/photo-1578469645762-4113063f256f?auto=format&fit=crop&w=400&q=80", type: "accommodation", desc: "Traditional Japanese inn featuring tatami rooms." },
-  "Nine Hours Namba": { location: "Namba, Osaka", image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80", type: "accommodation", desc: "Futuristic capsule hotel offering a unique and affordable stay." },
-  "Ritz-Carlton Kyoto": { location: "Kyoto, Japan", image: "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?auto=format&fit=crop&w=400&q=80", type: "accommodation", desc: "Experience ultimate luxury on the banks of the Kamogawa river." },
-  "Universal Studios Japan": { location: "Konohana Ward", image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "A major theme park offering thrilling rides based on popular movies.", tags: ["Theme Park"] },
-  "Fushimi Inari Taisha": { location: "Fushimi Ward, Kyoto", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "Famous for its thousands of vermilion torii gates.", tags: ["Culture", "Shrine"] },
-  "Osaka Castle": { location: "Chuo Ward, Osaka", image: "https://images.unsplash.com/photo-1583335508892-747fceb4131b?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "A famous Japanese castle that played a major role in the unification of Japan.", tags: ["History", "Castle"] },
-  "Arashiyama Bamboo Grove": { location: "Arashiyama, Kyoto", image: "https://images.unsplash.com/photo-1578469645762-4113063f256f?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "A mesmerizing path winding through towering bamboo stalks.", tags: ["Nature"] },
-  "Kuromon Market": { location: "Nipponbashi, Osaka", image: "https://images.unsplash.com/photo-1623880590898-d14efdceab9a?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "A lively covered market known for its fresh seafood and street food.", tags: ["Food Market"] },
-  "Dotonbori": { location: "Dotonbori, Osaka", image: "https://images.unsplash.com/photo-1559828551-789a8119bf74?auto=format&fit=crop&w=400&q=80", type: "activity", desc: "One of the principal tourist and nightlife areas in Osaka.", tags: ["Street Food"] }
+  "Hotel Monterey Grasmere": { location: "Namba, Osaka", image: "/assets/monterey-grasmere.jpeg", type: "accommodation", desc: "A sleek hotel with great city views, connected directly to Namba Station.", tags: ["Central", "City View", "Convenient"] },
+  "Cross Hotel Osaka": { location: "Dotonbori, Osaka", image: "/assets/cross-hotel-osaka.png", type: "accommodation", desc: "Stylish hotel located just a minute's walk from the bustling Dotonbori area.", tags: ["Nightlife", "Shopping", "Modern"] },
+  "Kyoto Ryokan Kinoe": { location: "Gion, Kyoto", image: "/assets/kinoe.png", type: "accommodation", desc: "Traditional inn offering tatami rooms, kaiseki dining, and public baths.", tags: ["Traditional", "Ryokan", "Culture"] },
+  "Nine Hours Namba": { location: "Namba, Osaka", image: "/assets/nine-horus-mamba.jpeg", type: "accommodation", desc: "Minimalist capsule hotel offering a unique and efficient stay experience.", tags: ["Capsule", "Budget", "Minimalist"] },
+  "Ritz-Carlton Kyoto": { location: "Kyoto, Japan", image: "/assets/carlton-kyoto.png", type: "accommodation", desc: "Luxury hotel blending traditional Japanese aesthetics with modern comforts.", tags: ["Luxury", "Riverside", "Spa"] },
+  "Universal Studios Japan": { location: "Konohana Ward", image: "/assets/usj.jpeg", type: "activity", desc: "World-class theme park featuring Super Nintendo World and The Wizarding World of Harry Potter.", tags: ["Theme Park", "Entertainment", "Family"] },
+  "Fushimi Inari Taisha": { location: "Fushimi Ward, Kyoto", image: "/assets/fushimi inari taisha.jpeg", type: "activity", desc: "Iconic Shinto shrine famous for its thousands of vermilion torii gates.", tags: ["Culture", "Shrine", "Hiking"] },
+  "Osaka Castle": { location: "Chuo Ward, Osaka", image: "/assets/osaka-castle.jpeg", type: "activity", desc: "Historic castle surrounded by a large park with moat and plum orchard.", tags: ["History", "Castle", "Park"] },
+  "Arashiyama Bamboo Grove": { location: "Arashiyama, Kyoto", image: "/assets/bamboo-grove.jpeg", type: "activity", desc: "A mesmerizing path through towering bamboo stalks in western Kyoto.", tags: ["Nature", "Photography", "Scenic"] },
+  "Kuromon Market": { location: "Nipponbashi, Osaka", image: "/assets/dotonbori.jpeg", type: "activity", desc: "A lively covered market known for its fresh seafood and street food.", tags: ["Food Market"] },
+  "Dotonbori": { location: "Dotonbori, Osaka", image: "/assets/dotonbori.jpeg", type: "activity", desc: "One of the principal tourist and nightlife areas in Osaka.", tags: ["Street Food"] }
 };
 
 const CATEGORIES = [
@@ -242,11 +242,11 @@ export default function SmartMapPage() {
             {/* Fake Image Grid */}
             <div className="w-full h-full flex">
               <div className="w-2/3 h-full relative border-r-2 border-white">
-                <img src={placeDetails?.image || "https://images.unsplash.com/photo-1559828551-789a8119bf74"} className="w-full h-full object-cover" />
+                <img src={placeDetails?.image || "/assets/dotonbori.jpeg"} className="w-full h-full object-cover" />
               </div>
               <div className="w-1/3 h-full flex flex-col">
                 <div className="h-1/2 relative border-b-2 border-white">
-                   <img src="https://images.unsplash.com/photo-1580822184713-f66fbbbd5935?auto=format&fit=crop&w=400" className="w-full h-full object-cover" />
+                   <img src="/assets/dotonbori.jpeg" className="w-full h-full object-cover" />
                 </div>
                 <div className="h-1/2 bg-gradient-to-br from-green-200 to-emerald-300 relative">
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-sm cursor-pointer hover:bg-black/50 transition-colors">

@@ -19,7 +19,7 @@ const malaysia = [
 ];
 const travelPosts = [
   { title: "Sunrise, street food and a little bit of Seoul", type: "Photo post", image: "https://images.unsplash.com/photo-1538485399081-7c897d5bfbf6?auto=format&fit=crop&w=900&q=80", authorName: "ami.moment", authorAvatar: "https://i.pravatar.cc/100?img=5", likes: "24.2K" },
-  { title: "My three-day Kyoto itinerary", type: "Reel", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80", authorName: "SENKO", authorAvatar: "https://i.pravatar.cc/100?img=9", likes: "364" },
+  { title: "My three-day Kyoto itinerary", type: "Reel", image: "/assets/fushimi inari taisha.jpeg", authorName: "SENKO", authorAvatar: "https://i.pravatar.cc/100?img=9", likes: "364" },
   { title: "Where should I go for my next solo trip?", type: "Text post", image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80", authorName: "wanderlust_jx", authorAvatar: "https://i.pravatar.cc/100?img=12", likes: "1.2K" },
   { title: "A quiet morning in the Cameron Highlands", type: "Photo post", image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80", authorName: "chloe_travels", authorAvatar: "https://i.pravatar.cc/100?img=20", likes: "8,402" },
 ];

@@ -502,8 +502,7 @@ export default function ChatHubPage() {
                     <p className="text-muted-foreground text-xs">KIX (T1)</p>
                   </div>
                 </div>
-                <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your airline</p><div className="space-y-2">{['Malaysia Airlines · RM 1,289', 'AirAsia X · RM 899'].map((option) => <Button key={option} variant={selectedManageFlight === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageFlight(option.split(' · ')[0])} className="w-full justify-between"><span>{option}</span>{selectedManageFlight === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}</div>
-                <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your accommodation</p><div className="space-y-2">{['The Celestine Kyoto Gion · RM 2,140', 'Hotel Gracery Kyoto · RM 1,780'].map((option) => <Button key={option} variant={selectedManageHotel === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageHotel(option.split(' · ')[0])} className="w-full justify-between"><span>{option}</span>{selectedManageHotel === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}</div><Button onClick={() => { localStorage.setItem('golahBookingComplete', 'true'); setBookingComplete(true); }} className="mt-3 w-full bg-[#ff6b3d] text-white hover:bg-[#f45d30]">Confirm booking</Button>
+                <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Choose your airline</p><div className="space-y-2">{['Malaysia Airlines · RM 1,289', 'AirAsia X · RM 899'].map((option) => <Button key={option} variant={selectedManageFlight === option.split(' · ')[0] ? 'default' : 'outline'} onClick={() => setSelectedManageFlight(option.split(' · ')[0])} className="w-full justify-between"><span>{option}</span>{selectedManageFlight === option.split(' · ')[0] && <Check className="h-4 w-4" />}</Button>)}</div><Button onClick={() => { localStorage.setItem('golahBookingComplete', 'true'); setBookingComplete(true); }} className="mt-3 w-full bg-[#ff6b3d] text-white hover:bg-[#f45d30]">Confirm booking</Button>
               </div>
             </div>
           )}
@@ -517,7 +516,7 @@ export default function ChatHubPage() {
                 <p className="text-xs text-green-600">Your flight and passes are ready.</p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
-                {['Flight boarding pass', 'Hotel reservation pass', 'Attraction QR pass', 'Trip support pass'].map((label) => (
+                {['Flight boarding pass', 'Attraction QR pass', 'Trip support pass'].map((label) => (
                   <button key={label} onClick={() => setActivePass(label)} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left text-sm font-semibold hover:border-[#ff6b3d]">
                     <QrCode className="h-5 w-5 text-[#ff6b3d]" />{label}
                   </button>

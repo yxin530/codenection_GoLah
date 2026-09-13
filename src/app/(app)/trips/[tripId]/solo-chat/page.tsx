@@ -457,7 +457,7 @@ export default function ChatHubPage() {
                 <p className="text-xs text-green-600">Your flight and passes are ready.</p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
-                {['Flight boarding pass', 'Hotel reservation pass', 'Attraction QR pass', 'Trip support pass'].map(label => (
+                {['Flight boarding pass', 'Attraction QR pass', 'Trip support pass'].map(label => (
                   <button key={label} onClick={() => setActivePass(label)} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left text-sm font-semibold hover:border-[#ff6b3d]">
                     <QrCode className="h-5 w-5 text-[#ff6b3d]" />{label}
                   </button>
